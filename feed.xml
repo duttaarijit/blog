@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+
+
+
+  
+
+<title type="text">eLitmus Blog</title>
+<generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
+<link rel="self" type="application/atom+xml" href="/feed.xml" />
+<link rel="alternate" type="text/html" href="/" />
+<updated>2014-06-11T22:19:52+05:30</updated>
+<id>/</id>
+<author>
+  <name>eLitmus.com</name>
+  <uri>/</uri>
+  <email>site-admin@elitmus.com</email>
+</author>
+
+
+<entry>
+  <title type="html"><![CDATA[Using Monit to get email alert on unauthorized login]]></title>
+  <link rel="alternate" type="text/html" href="/technology/using-monit-to-get-email-alert-on-unauthorized-login/"/>
+  <id>/technology/using-monit-to-get-email-alert-on-unauthorized-login</id>
+  <updated>2014-06-04 09:57:11 +0530T00:00:00-00:00</updated>
+  <published>2014-06-04T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#ssh" term="ssh" /><category scheme="/tags/#monit" term="monit" /><category scheme="/tags/#alert" term="alert" />
+  <content type="html">
+  
+    &lt;p&gt;For a long time, we had our own custom written perl script to alert us whenever someone logged into our production servers from an ip address we do not recognize (not whitelisted). The script looked somewhat like this…&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;perl&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/perl&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# script file: alert_on_login.pl&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;my&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$login_str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Accepted publickey&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;my&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$whitelist_ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;122.123.123.111&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;sub &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sendEmail&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;my&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;@_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;my&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$sendmail&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;/usr/lib/sendmail&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;|$sendmail -oi -t&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;From: $from\n&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;To: $to\n&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;Subject: $subject\n\n&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;$message\n&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MAIL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/$login_str/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/$whitelist_ip/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;nb&quot;&gt;chomp&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;nv&quot;&gt;@arr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;sendEmail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;recepient1@elitmus.com, recepient2@elitmus.com&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                          &lt;span class=&quot;s&quot;&gt;&amp;#39;monit@elitmus.com&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                          &lt;span class=&quot;s&quot;&gt;&amp;#39;Server login from &amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$arr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+                          &lt;span class=&quot;nv&quot;&gt;$_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;All we needed to do was to run this script in the background as a daemon, and it would send us an email alert whenever someone logged in successfully. As root user start the script like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  # (perl alert_on_login.pl /var/log/auth.log &amp;amp;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ever since we started using &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;monit&lt;/a&gt; for the usual purpose (monitoring processes), we have also entrusted &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;monit&lt;/a&gt; to do the job of the above perl script. &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;Monit&lt;/a&gt; makes this super simple…&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;Monit&lt;/a&gt; is a popular opensource process monitoring tool. It is used mostly for monitoring health of any linux process and take necessary action if any of the set parameters are breached. Monit can restart a process if the process failed for some reason. Monit can also notify you of incidents and actions taken.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://mmonit.com/monit/documentation/monit.html#alert_messages&quot;&gt;See this&lt;/a&gt; to learn more about &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;monit’s&lt;/a&gt; alert capabilities.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;Monit’s&lt;/a&gt; global configuration file is usually /etc/monit/monitrc. Here is what &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;monit&lt;/a&gt; needs to be told about how to send email alerts:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;...
+&lt;span class=&quot;c&quot;&gt;# This is our SMTP server settings. The complete syntax is&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# SET MAILSERVER &amp;lt;hostname [PORT] [USERNAME] [PASSWORD] [using SSLAUTO|SSLV2|SSLV3|TLSV11|TLSV12] [CERTMD5 checksum]&amp;gt;, ...&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#          [with TIMEOUT X SECONDS]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#          [using HOSTNAME hostname]&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# But for our purpose, localhost is good enough&lt;/span&gt;
+SET mailserver localhost
+
+&lt;span class=&quot;c&quot;&gt;# This is the email template for alert messages&lt;/span&gt;
+SET mail-format &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  from: monit@elitmus.com
+  subject: &lt;span class=&quot;nv&quot;&gt;$SERVICE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$EVENT&lt;/span&gt; at &lt;span class=&quot;nv&quot;&gt;$DATE&lt;/span&gt;
+  message: Monit &lt;span class=&quot;nv&quot;&gt;$ACTION&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$SERVICE&lt;/span&gt; at &lt;span class=&quot;nv&quot;&gt;$DATE&lt;/span&gt; on &lt;span class=&quot;nv&quot;&gt;$HOST&lt;/span&gt;: &lt;span class=&quot;nv&quot;&gt;$DESCRIPTION&lt;/span&gt;.
+           Yours sincerely,
+           monit
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# Alerts can be triggered for various reasons. Successful ssh login is just one of those reasons.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Since this is a global configuration, we can tell monit to not send alerts for certain events&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#  We also specify the email address of the recepient who will receive the alerts&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;alert recepient1@elitmus.com NOT ON &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; action, instance, pid, ppid, nonexist &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And then we add this config file &lt;code&gt;ssh_logins.conf&lt;/code&gt; specific to sshd related stuff:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;bash&quot;&gt;check file ssh_logins with path /var/log/auth.log
+  ignore match &lt;span class=&quot;s2&quot;&gt;&amp;quot;/etc/monit/whitelist_ips.regex&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;match &lt;span class=&quot;s2&quot;&gt;&amp;quot;Accepted publickey&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then &lt;/span&gt;alert&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Notice how we tell &lt;a href=&quot;https://mmonit.com/monit/&quot;&gt;monit&lt;/a&gt; to ignore logins from known ip addresses. We can now store all whitelist ip addresses in a separate file &lt;code&gt;/etc/monit/whitelist_ips.regex&lt;/code&gt;, one address per line.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; We have disabled password based login and hence do not monitor for passworded logins. If you use passworded login, you should change &lt;code&gt;&quot;Accepted publickey&quot;&lt;/code&gt; to &lt;code&gt;&quot;Accepted password&quot;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Happy monitoring!&lt;/p&gt;
+
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/using-monit-to-get-email-alert-on-unauthorized-login/&quot;&gt;Using Monit to get email alert on unauthorized login&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on June 04, 2014.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
+  <title type="html"><![CDATA[Gotcha's while syntactically translating AES encryption logic from PHP to Ruby]]></title>
+  <link rel="alternate" type="text/html" href="/technology/gotchas-while-syntactically-translating-aes-encryption-logic-from-php-to-ruby/"/>
+  <id>/technology/gotchas-while-syntactically-translating-aes-encryption-logic-from-php-to-ruby</id>
+  <updated>2014-05-25 20:39:45 +0530T00:00:00-00:00</updated>
+  <published>2014-05-25T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#ruby" term="ruby" /><category scheme="/tags/#PHP" term="PHP" /><category scheme="/tags/#AES" term="AES" /><category scheme="/tags/#Cryptography" term="Cryptography" /><category scheme="/tags/#Encryption" term="Encryption" /><category scheme="/tags/#Decryption" term="Decryption" />
+  <content type="html">
+  
+    &lt;p&gt;Our Payment Gateway service provider recently launched a new platform with some nice-to-have features. We wanted those features and so we decided to migrate. Being one of the earliest adopters of the new platform, there was no integration kit available. We had to build it ourselves. Not a problem. Since we are a Ruby On Rails shop, we built our own Ruby integration kit. All went well and we pushed it to production.&lt;/p&gt;
+
+&lt;p&gt;A month or two later, we got an email from our gateway provider seeking our help with writing the &lt;code&gt;encryption&lt;/code&gt; and &lt;code&gt;decryption&lt;/code&gt; logic for the Ruby integration kit they were developing. We were a little surprised, because we noticed they had already published integration kits for PHP, Python, JAVA etc. How difficult can it be to translate that to Ruby?&lt;/p&gt;
+
+&lt;p&gt;Turns out, syntactic transalation of code from one programming language to another does not always work. A slightly more deeper knowledge helps. We could almost guess where they were getting stuck.&lt;/p&gt;
+
+&lt;p&gt;Before we get to the story, some backgroung on the encryption algo will add clarity.&lt;/p&gt;
+
+&lt;p&gt;For secure communication between our server and the gateway, the prescribed cipher was AES, specifically symmetric-key block cipher with a 128 bit secret key in CBC mode. Since OpenSSL already implements this algo and is avaliable on almost all platforms, most programming languages just bundle a wrapper for OpenSSL.&lt;/p&gt;
+
+&lt;p&gt;So if its the same OpenSSL that the wrappers call, why couldn’t the gateway service provider translate their own PHP code to Ruby?&lt;/p&gt;
+
+&lt;h3 id=&quot;here-is-why&quot;&gt;Here is why:&lt;/h3&gt;
+
+&lt;p&gt;AES works by breaking the plain text (the text to be encrypted) into blocks of 128 bits (or 16 bytes). In CBC mode, each block is XORed with the key to get cipher text of that block. The cipher text of the previous block is used for encrypting the next block… so on and so forth, until all the blocks are encrypted.&lt;/p&gt;
+
+&lt;p&gt;Note that the length of the cipher text will be exactly same as that of the plain text.&lt;/p&gt;
+
+&lt;p&gt;The problem occures with the last block. If the length of the plain text is not a multiple of 128. the last block will be shorter than 128 bits. Since the algo can work only on blocks of 128 bits, It is a common practice to pad the last block so that it becomes equal to 128 bits in lenght. This padding is subsequently discarded after decryption.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; The actual algo is more complicated than this. We have deliberately left out details that are not relevent for this post.&lt;/p&gt;
+
+&lt;p&gt;This is the encryption method in the PHP integration kit published by the gateway service provider&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;php&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;function encrypt($plainText,$key)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $secretKey = hextobin(md5($key));&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $initVector = &amp;quot;...&amp;quot;;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $openMode = mcrypt_module_open(MCRYPT_RIJNDAEL_128, &amp;#39;&amp;#39;,&amp;#39;cbc&amp;#39;, &amp;#39;&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $blockSize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, &amp;#39;cbc&amp;#39;);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  $plainPad = pkcs5_pad($plainText, $blockSize);  //  &amp;lt;---- Padding&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  if (mcrypt_generic_init($openMode, $secretKey, $initVector) != -1) &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  {&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    $encryptedText = mcrypt_generic($openMode, $plainPad);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;    mcrypt_generic_deinit($openMode);      &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  } &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  return bin2hex($encryptedText);&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;// Padding method&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;function pkcs5_pad ($plainText, $blockSize)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;  // padding logic here&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt; &lt;span class=&quot;x&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And here is the same implemented in Ruby&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;encrypt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plain_text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;secret_key&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Digest&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MD5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;digest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;OpenSSL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:CBC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encrypt&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;secret_key&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iv&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;INIT_VECTOR&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;encrypted_text&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plain_text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cipher&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;final&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;8&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encrypted_text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;H*&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;9&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Notice any difference?&lt;/p&gt;
+
+&lt;p&gt;It turns out that, unlike in Python, PHP and few other languages, Ruby wrapper for OpenSSL automatically takes care of padding (default behaviour). This is clearly mentioned in the &lt;a href=&quot;http://ruby-doc.org/stdlib-2.0/libdoc/openssl/rdoc/OpenSSL/Cipher.html#method-i-final&quot;&gt;documentation&lt;/a&gt;. For some reason, techies at our gateway service provider overlooked this and hit a dead-end.&lt;/p&gt;
+
+&lt;p&gt;By the they, they were gracious enough to acknowledge our contribution in their Ruby Integration Kit (accessible only to their subscribers)&lt;/p&gt;
+
+&lt;p&gt;But We have open sourced our code here ‘&lt;a href=&quot;https://github.com/elitmus/cca_crypto&quot;&gt;cca_crypto&lt;/a&gt;’. We have plans of make this into a complete package - with view generators etc., and publish this as a rubygem. We shall gladly accept any pull request!&lt;/p&gt;
+
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/gotchas-while-syntactically-translating-aes-encryption-logic-from-php-to-ruby/&quot;&gt;Gotcha's while syntactically translating AES encryption logic from PHP to Ruby&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on May 25, 2014.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
+  <title type="html"><![CDATA[Setting Up Amazon RDS as a Slave to a self-managed MySQL server]]></title>
+  <link rel="alternate" type="text/html" href="/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/"/>
+  <id>/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server</id>
+  <updated>2014-05-21 20:43:52 +0530T00:00:00-00:00</updated>
+  <published>2014-05-21T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#mysql" term="mysql" /><category scheme="/tags/#RDS" term="RDS" /><category scheme="/tags/#AWS" term="AWS" /><category scheme="/tags/#replication" term="replication" />
+  <content type="html">
+  
+    &lt;p&gt;Last week, we migrated our MySQL database server, which was running on an EC2 instance, to RDS. We hoped the migration process would be smooth.&lt;/p&gt;
+
+&lt;p&gt;As always, migrating a large database has its challenges. Business folks expect the minimum possible downtime.&lt;/p&gt;
+
+&lt;p&gt;The plan was simple.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Launch an RDS instance&lt;/li&gt;
+  &lt;li&gt;Load a full dump into it&lt;/li&gt;
+  &lt;li&gt;Configure it to act as a slave of the self-managed server (current master)&lt;/li&gt;
+  &lt;li&gt;On the D-day, pull the website down and promote the RDS instance to take over as the new master&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We soon discovered that RDS comes with curtailed root permissions. There are several commands that are disallowed. Some of these include “CHANGE MASTER TO….”&lt;/p&gt;
+
+&lt;p&gt;What do we do now?&lt;/p&gt;
+
+&lt;p&gt;One option was to carry out the migration in one go, while the website was offline. This meant the downtime would have been several hours, instead of minutes. Obviously, not an acceptable option at all.&lt;/p&gt;
+
+&lt;p&gt;Some R&amp;amp;D was all it took to discover how to proceed with the original approach.&lt;/p&gt;
+
+&lt;p&gt;RDS comes with a bunch of stored procedures, which help you configure it as a slave. There is almost a one-to-one mapping of these stored procedures with the commands that are disallowed.&lt;/p&gt;
+
+&lt;table class=&quot;table table-bordered table-condensed table-hover&quot;&gt;
+&lt;tr&gt;&lt;th&gt;MySQL Command&lt;/th&gt;&lt;th&gt;Corrosponding Stored Proc&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;CHANGE MASTER TO&lt;/td&gt;&lt;td&gt;mysql.rds_set_external_master&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;START SLAVE&lt;/td&gt;&lt;td&gt;mysql.rds_start_replication&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;STOP SLAVE&lt;/td&gt;&lt;td&gt;mysql.rds_stop_replication&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;RESET MASTER&lt;/td&gt;&lt;td&gt;mysql.rds_reset_external_master &lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;So, Using these stored procedures, you can now configure your RDS instance as a slave to your self-managed MySQL server&lt;/p&gt;
+
+&lt;p&gt;After loading a full dump to RDS, Call the stored procedure &lt;code&gt;mysql.rds_set_external_master&lt;/code&gt; like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CALL mysql.rds_set_external_master (&#39;servername&#39;, port, &#39;user&#39;, &#39;password&#39;, &#39;binlog-file&#39;, binlog-offset, 0);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CALL mysql.rds_start_replication;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This will make RDS a slave of your self managed mysql server. You can run “SHOW SLAVE STATUS” to see its working.&lt;/p&gt;
+
+&lt;p&gt;When it is time to promote RDS to master. You call these stored procedures&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;CALL mysql.rds_stop_replication;
+
+CALL mysql.rds_reset_external_master;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That’s it. Now point your applications to the RDS instance and take your site live.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;For your RDS to work as a slave, it needs permissions to connect to port 3306 of your current master. Make sure you open this port for the RDS instance.&lt;/p&gt;
+
+&lt;p&gt;You can run the following command to find out the ip address of your rds instance&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ping -c rdsname.cpesx66wwe7y.ap-southeast-1.rds.amazonaws.com
+&lt;/code&gt;&lt;/pre&gt;
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/&quot;&gt;Setting Up Amazon RDS as a Slave to a self-managed MySQL server&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on May 21, 2014.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
+  <title type="html"><![CDATA[Beware of creating $HOME/.ssh folder by hand, when SELinux is turned on]]></title>
+  <link rel="alternate" type="text/html" href="/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on/"/>
+  <id>/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on</id>
+  <updated>2014-05-23 12:32:45 +0530T00:00:00-00:00</updated>
+  <published>2012-07-22T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#SSH" term="SSH" /><category scheme="/tags/#SELinux" term="SELinux" />
+  <content type="html">
+  
+    &lt;p&gt;I was experimenting with &lt;code&gt;chef&lt;/code&gt; to manage our Linux boxes. As a standard practice, our application user &lt;code&gt;deployer&lt;/code&gt; is homed in &lt;code&gt;/applications/deployer&lt;/code&gt; rather than the usual &lt;code&gt;/home/deployer&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To enable password less login, I appended my public key to &lt;code&gt;~/.ssh/authorized_keys&lt;/code&gt; &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; ssh-copy-id -i ~/.ssh/id_rsa deployer@remote.server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first time I run this command, I will be prompted for a password to install my key. After this, I can run the below command to login without a password:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ssh -i ~/.ssh/id_rsa deployer@remote.server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;However, that did not work as expected.&lt;/p&gt;
+
+&lt;p&gt;For some reason, &lt;code&gt;sshd&lt;/code&gt; was unable to read the &lt;code&gt;authorized_keys&lt;/code&gt; file. I checked all the usual things.. all looked fine. Everything seem to work just fine when &lt;code&gt;SELinux&lt;/code&gt; was running in &lt;code&gt;permissive&lt;/code&gt; mode on the remote server, but not when it was in &lt;code&gt;enforcing&lt;/code&gt; mode.&lt;/p&gt;
+
+&lt;p&gt;Discovered that if &lt;code&gt;.ssh&lt;/code&gt; folder was created by hand (or even the folder containing &lt;code&gt;.ssh&lt;/code&gt; folder), we need to do few additional things.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 1:&lt;/strong&gt; &lt;/p&gt;
+
+&lt;p&gt;Open this file /etc/selinux/targeted/contexts/files/file_contexts.homedirs and append the following line to the bottom&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; /applications/deployer/[^/]*/\.ssh(/.*)?     system_u:object_r:ssh_home_t:s0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note: remember to adjust the path as per your needs.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Step 2:&lt;/strong&gt; run the following command&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;restorecon -R -v /applications/deployer/.ssh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Again, remember to adjust the path as per your needs.&lt;/p&gt;
+
+&lt;p&gt;Now you are all set!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt; ssh -i ~/.ssh/id_rsa deployer@remote.server
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;should log you in without asking for a password!&lt;/p&gt;
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on/&quot;&gt;Beware of creating $HOME/.ssh folder by hand, when SELinux is turned on&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on July 22, 2012.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
+  <title type="html"><![CDATA[Importance of Date field in an email's Header]]></title>
+  <link rel="alternate" type="text/html" href="/technology/importance-of-date-field-in-an-emails-header/"/>
+  <id>/technology/importance-of-date-field-in-an-emails-header</id>
+  <updated>2012-04-04 10:20:00 +0530T00:00:00-00:00</updated>
+  <published>2012-04-04T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#email" term="email" /><category scheme="/tags/#header" term="header" /><category scheme="/tags/#spam" term="spam" />
+  <content type="html">
+  
+    &lt;p&gt;So far, we paid little attention to email delivery issues. We knew delivering to rediffmail is a pain. So we discouraged our users from using rediffmail. Apart from that we had FCrDNS and SPF configured and working fine. We had also configured &lt;a href=&quot;http://www.dkim.org/&quot;&gt;DKIM&lt;/a&gt;. And then a month ago, we also added &lt;a href=&quot;http://www.dmarc.org/&quot;&gt;DMARC&lt;/a&gt; in monitor mode.&lt;/p&gt;
+
+&lt;p&gt;We were happy! Until…&lt;/p&gt;
+
+&lt;p&gt;Recently, we started getting loads of phishing emails from what appeared to originate from our own domain name [not our servers].&lt;/p&gt;
+
+&lt;p&gt;It told us two things. &lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.elitmus.com&quot;&gt;eLitmus.com&lt;/a&gt; was growing in popularity&lt;/li&gt;
+  &lt;li&gt;We cannot ignore email delivery issue any longer&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We ran our email through &lt;a href=&quot;http://wiki.apache.org/spamassassin/SpamAssassin&quot;&gt;Spam Assassin&lt;/a&gt; checks and were surprised to see that we got a score of 6. Anything above 5 is BAD. It’s a straight spam! But we knew we were not spamming. These were transactional emails triggered by our website on certain events, such as &lt;em&gt;New registration, or Forgot Password&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;It was almost by accident, we noticed that the timezone in the Date header of the email was appearing as +0580. Indian Standard Time (IST) is 5 hours and 30 minutes ahead of UTC. So this value should have been +0530, not +0580. Apparently, that is good enough reason for Spam Assassin to treat our mails as spam.&lt;/p&gt;
+
+&lt;p&gt;Tracing backwards, we discovered a bug in our application code and fixed it. It was a single line fix.&lt;/p&gt;
+
+&lt;p&gt;With this change, &lt;a href=&quot;http://wiki.apache.org/spamassassin/SpamAssassin&quot;&gt;Spam Assassin&lt;/a&gt; was happy to give us a score of zero.&lt;/p&gt;
+
+&lt;p&gt;That is just one part of one header. There are ten others which have to be configured correctly.&lt;/p&gt;
+
+&lt;p&gt;Here is an article with good insights in to how gmail calculates sender reputation. Its a little dated, but still relevent. &lt;a href=&quot;http://www.google.com/url?sa=t&amp;amp;rct=j&amp;amp;q=what%20is%20email%20reputation%3F%20how%20to%20calculate%20email%20reputation%3F%20how%20to%20calculate%20sender%20reputation%3F&amp;amp;source=web&amp;amp;cd=2&amp;amp;ved=0CCgQFjAB&amp;amp;url=http%3A%2F%2Fwww.ceas.cc%2F2006%2F19.pdf&amp;amp;ei=Pmp9T76THsnYrQewg7TsDA&amp;amp;usg=AFQjCNEb_tYLRePQlW_RfMJZTkSiWdpy4A&amp;amp;cad=rja&quot;&gt;Sender reputation in a large webmail service (PDF)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;By the way, here is a nice and free JSon API to check your &lt;a href=&quot;http://spamcheck.postmarkapp.com/&quot;&gt;email’s reputation&lt;/a&gt;.&lt;/p&gt;
+
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/importance-of-date-field-in-an-emails-header/&quot;&gt;Importance of Date field in an email's Header&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on April 04, 2012.&lt;/p&gt;</content>
+</entry>
+
+</feed>
