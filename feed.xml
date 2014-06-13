@@ -9,7 +9,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="/feed.xml" />
 <link rel="alternate" type="text/html" href="/" />
-<updated>2014-06-12T10:38:35+05:30</updated>
+<updated>2014-06-13T16:57:38+05:30</updated>
 <id>/</id>
 <author>
   <name>eLitmus.com</name>
@@ -33,9 +33,7 @@
   <category scheme="/tags/#ssh" term="ssh" /><category scheme="/tags/#monit" term="monit" /><category scheme="/tags/#alert" term="alert" />
   <content type="html">
   
-    &lt;p&gt;{“name”=&amp;gt;”Shireesh Jayashetty”, “avatar”=&amp;gt;”shireeshj.png”, “email”=&amp;gt;”shireesh@elitmus.com”, “twitter”=&amp;gt;”shireeshj”, “github”=&amp;gt;”shireeshj”, “stackexchange”=&amp;gt;nil, “linkedin”=&amp;gt;”shireeshj”, “instagram”=&amp;gt;nil, “tumblr”=&amp;gt;nil, “flickr”=&amp;gt;nil, “bio”=&amp;gt;”Shireesh heads technology at eLitmus. He is generally curious about things, especially technology. His curiosity almost cost him his first job when he hacked into a customer’s system to gain unauthorized internet access (mid ’90s). He was lucky, his employer saw this as a potential rather than a threat.”}&lt;/p&gt;
-
-&lt;p&gt;For a long time, we had our own custom written perl script to alert us whenever someone logged into our production servers from an ip address we do not recognize (not whitelisted). The script looked somewhat like this…&lt;/p&gt;
+    &lt;p&gt;For a long time, we had our own custom written perl script to alert us whenever someone logged into our production servers from an ip address we do not recognize (not whitelisted). The script looked somewhat like this…&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;perl&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/perl&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# script file: alert_on_login.pl&lt;/span&gt;
