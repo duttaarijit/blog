@@ -9,13 +9,62 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="/feed.xml" />
 <link rel="alternate" type="text/html" href="/" />
-<updated>2014-06-16T10:58:37+05:30</updated>
+<updated>2014-08-18T13:42:08+05:30</updated>
 <id>/</id>
 <author>
   <name>eLitmus.com</name>
   <uri>/</uri>
   <email>site-admin@elitmus.com</email>
 </author>
+
+
+<entry>
+  <title type="html"><![CDATA[How we host our blog on GitHub pages and yet serve it from our own Sub-URL]]></title>
+  <link rel="alternate" type="text/html" href="/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/"/>
+  <id>/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url</id>
+  <updated>2014-08-18 12:26:44 +0530T00:00:00-00:00</updated>
+  <published>2014-08-18T00:00:00+05:30</published>
+  
+  <author>
+    <name>eLitmus.com</name>
+    <uri></uri>
+    <email>site-admin@elitmus.com</email>
+  </author>
+  <category scheme="/tags/#Github" term="Github" /><category scheme="/tags/#nginx" term="nginx" /><category scheme="/tags/#reverse%20proxy" term="reverse proxy" />
+  <content type="html">
+  
+    &lt;p&gt;There are umpteen number of blog posts telling you how to host your static site on GitHub Pages for free. They also tell you how to serve such a site from your own domain name.&lt;/p&gt;
+
+&lt;p&gt;As you may have guessed, this blog is also hosted on GH Pages. Don’t believe me? try visiting this URL &lt;code&gt;https://shireeshj.github.io/blog/&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;It is easy to map a &lt;code&gt;github.io&lt;/code&gt; url such as this, to a subdomain. For example, it is easy to map the url to &lt;code&gt;https://blog.elitmus.com/blog/&lt;/code&gt;.  All you need to do is check-in a file named CNAME into the root folder of your git repo that contains your static site.&lt;/p&gt;
+
+&lt;p&gt;What if you want your static site to be served from domain apex? That is easy too.  &lt;a href=&quot;https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages&quot;&gt;GitHub pages help&lt;/a&gt; explains this in a simple manner. &lt;/p&gt;
+
+&lt;p&gt;However, If your domain apex is already taken, say by your other website, you have a problem.  To host your static site on a domain apex (or a sub-url of domain apex) the domain apex should be available exclusively for use by github pages.&lt;/p&gt;
+
+&lt;p&gt;We had to overcome this very problem, since our business website is already hosted on &lt;code&gt;elitmus.com&lt;/code&gt; (and &lt;code&gt;www.elitmus.com&lt;/code&gt;).  Given that we are not in great love with subdomains. We had to find a workaround. And here is what we did:&lt;/p&gt;
+
+&lt;p&gt;Since we use nginx to server our business website, all we had to do was to write a simple traffic-cop rule. What this rule did was, to parse the request url to see if it starts with &lt;code&gt;/blog/&lt;/code&gt;. If yes, then the request is reverse proxied to GitHub Pages. If no, then it is served from local disk. &lt;/p&gt;
+
+&lt;p&gt;The relevant lines from the config file are here&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;	location /blog/ {
+	    proxy_pass       http://shireeshj.github.io/;
+	    proxy_redirect off;
+	    proxy_set_header Host &amp;lt;shireeshj.github.io&amp;gt;;
+	    proxy_set_header X-Host &amp;lt;shireeshj.github.io&amp;gt;;;
+	    proxy_set_header X-Real-IP $remote_addr;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is how we get free hosting for our blog, yet serve it from our official URL. If GitHub pages ever stops us from reverse proxying, we shall simply spin our own webserver to run this static site and reverse proxy to that web server.&lt;/p&gt;
+
+
+  
+  &lt;p&gt;&lt;a href=&quot;/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/&quot;&gt;How we host our blog on GitHub pages and yet serve it from our own Sub-URL&lt;/a&gt; was originally published by eLitmus.com at &lt;a href=&quot;&quot;&gt;eLitmus Blog&lt;/a&gt; on August 18, 2014.&lt;/p&gt;</content>
+</entry>
 
 
 <entry>

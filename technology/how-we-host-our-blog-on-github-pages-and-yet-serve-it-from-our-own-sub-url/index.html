@@ -5,23 +5,21 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Setting Up Amazon RDS as a Slave to a self-managed MySQL server &#8211; eLitmus Blog</title>
+<title>How we host our blog on GitHub pages and yet serve it from our own Sub-URL &#8211; eLitmus Blog</title>
 <meta name="description" content="We learn new things everyday, and we document our learnings here...">
 
-<meta name="keywords" content="mysql, RDS, AWS, replication">
+<meta name="keywords" content="Github, nginx, reverse proxy">
 
 <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary">    
-<meta name="twitter:title" content="Setting Up Amazon RDS as a Slave to a self-managed MySQL server">
-<meta name="twitter:description" content=" The master user of RDS has curtailed permissions and is not allowed to run several commands, including those required to configure a slave">
+<meta name="twitter:title" content="How we host our blog on GitHub pages and yet serve it from our own Sub-URL">
+<meta name="twitter:description" content=" Mapping a custom domain apex or subdomain to a site hosted on GitHub Pages is straight forward. But if your domain apex is already in use,and you still want your site hosted on GitHub Pages to be served as a sub-url, you need some magic to make it happen. This blog post discusses one such magic">
 <meta name="twitter:site" content="@elitmus">
 
     
-        
-            <meta name="twitter:creator" content="@shireeshj">
-        
-    
 
+    
+        
     
 
     
@@ -33,9 +31,9 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="/blog/images/blog_logo_taglinedorange.png"/>
 <meta property="og:type" content="article">
-<meta property="og:title" content="Setting Up Amazon RDS as a Slave to a self-managed MySQL server">
-<meta property="og:description" content="The master user of RDS has curtailed permissions and is not allowed to run several commands, including those required to configure a slave">
-<meta property="og:url" content="/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/">
+<meta property="og:title" content="How we host our blog on GitHub pages and yet serve it from our own Sub-URL">
+<meta property="og:description" content="Mapping a custom domain apex or subdomain to a site hosted on GitHub Pages is straight forward. But if your domain apex is already in use,and you still want your site hosted on GitHub Pages to be served as a sub-url, you need some magic to make it happen. This blog post discusses one such magic">
+<meta property="og:url" content="/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/">
 
 <meta property="og:site_name" content="eLitmus Blog">
 
@@ -45,7 +43,7 @@
 
 
 
-<link rel="canonical" href="https://www.elitmus.com/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/">
+<link rel="canonical" href="https://www.elitmus.com/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/">
 <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="eLitmus Blog Feed">
 
 
@@ -226,29 +224,26 @@
 
                 <span class="entry-tags">
                   
-                    <a href="/blog/tags/#mysql" title="Pages tagged mysql">mysql</a>
+                    <a href="/blog/tags/#Github" title="Pages tagged Github">Github</a>
                     &nbsp;&bull;&nbsp;
                   
-                    <a href="/blog/tags/#RDS" title="Pages tagged RDS">RDS</a>
+                    <a href="/blog/tags/#nginx" title="Pages tagged nginx">nginx</a>
                     &nbsp;&bull;&nbsp;
                   
-                    <a href="/blog/tags/#AWS" title="Pages tagged AWS">AWS</a>
-                    &nbsp;&bull;&nbsp;
-                  
-                    <a href="/blog/tags/#replication" title="Pages tagged replication">replication</a>
+                    <a href="/blog/tags/#reverse proxy" title="Pages tagged reverse proxy">reverse proxy</a>
                     
                   
 
                   <div class=' social-sharing pull-right'>        
   
     <span class="social-share-facebook">
-       <a href="https://www.facebook.com/sharer/sharer.php?u=/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
+       <a href="https://www.facebook.com/sharer/sharer.php?u=/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-twitter">
-       <a href="https://twitter.com/share?hashtags=technology&text=Setting Up Amazon RDS as a Slave to a self-managed MySQL server&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
+       <a href="https://twitter.com/share?hashtags=technology&text=How we host our blog on GitHub pages and yet serve it from our own Sub-URL&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-googleplus">
-       <a href="https://plus.google.com/share?url=/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square fa-lg"></i> +1</a>
+       <a href="https://plus.google.com/share?url=/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square fa-lg"></i> +1</a>
     </span><!-- /.social-share -->
      
 </div>
@@ -256,7 +251,7 @@
                 </span>
               
                 
-                  <h1 class="no-padding">Setting Up Amazon RDS as a Slave to a self-managed MySQL server</h1>
+                  <h1 class="no-padding">How we host our blog on GitHub pages and yet serve it from our own Sub-URL</h1>
                 
               </header>
             </div>
@@ -267,13 +262,13 @@
                 </div>
               
                 <div class='pull-left date-show'>
-                  <span class="entry-date date published"><time datetime="2014-05-21T00:00:00+05:30"><i class="fa fa-calendar"></i> May 21, 2014</time></span>&nbsp;
+                  <span class="entry-date date published"><time datetime="2014-08-18T00:00:00+05:30"><i class="fa fa-calendar"></i> August 18, 2014</time></span>&nbsp;
 
                     
                 </div>
                 <div class='pull-right date-show'>
                   <span>
-                    <a href="/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/" rel="bookmark" title="Setting Up Amazon RDS as a Slave to a self-managed MySQL server">
+                    <a href="/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/" rel="bookmark" title="How we host our blog on GitHub pages and yet serve it from our own Sub-URL">
                       <i class="fa fa-link"></i> Permalink
                     </a>
                   </span>
@@ -284,88 +279,54 @@
                     <h3 class="panel-title">TL;DR</h3>
                   </div>
                   <div class="panel-body">
-                    <aside>The master user of RDS has curtailed permissions and is not allowed to run several commands, including those required to configure a slave</aside>
+                    <aside>Mapping a custom domain apex or subdomain to a site hosted on GitHub Pages is straight forward. But if your domain apex is already in use,and you still want your site hosted on GitHub Pages to be served as a sub-url, you need some magic to make it happen. This blog post discusses one such magic</aside>
                   </div>
                 </div>
 
                   
                 
                 <div class="post-content-justify">
-                  <p>Last week, we migrated our MySQL database server, which was running on an EC2 instance, to RDS. We hoped the migration process would be smooth.</p>
+                  <p>There are umpteen number of blog posts telling you how to host your static site on GitHub Pages for free. They also tell you how to serve such a site from your own domain name.</p>
 
-<p>As always, migrating a large database has its challenges. Business folks expect the minimum possible downtime.</p>
+<p>As you may have guessed, this blog is also hosted on GH Pages. Don’t believe me? try visiting this URL <code>https://shireeshj.github.io/blog/</code></p>
 
-<p>The plan was simple.</p>
+<p>It is easy to map a <code>github.io</code> url such as this, to a subdomain. For example, it is easy to map the url to <code>https://blog.elitmus.com/blog/</code>.  All you need to do is check-in a file named CNAME into the root folder of your git repo that contains your static site.</p>
 
-<ol>
-  <li>Launch an RDS instance</li>
-  <li>Load a full dump into it</li>
-  <li>Configure it to act as a slave of the self-managed server (current master)</li>
-  <li>On the D-day, pull the website down and promote the RDS instance to take over as the new master</li>
-</ol>
+<p>What if you want your static site to be served from domain apex? That is easy too.  <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages">GitHub pages help</a> explains this in a simple manner. </p>
 
-<p>We soon discovered that RDS comes with curtailed root permissions. There are several commands that are disallowed. Some of these include “CHANGE MASTER TO….”</p>
+<p>However, If your domain apex is already taken, say by your other website, you have a problem.  To host your static site on a domain apex (or a sub-url of domain apex) the domain apex should be available exclusively for use by github pages.</p>
 
-<p>What do we do now?</p>
+<p>We had to overcome this very problem, since our business website is already hosted on <code>elitmus.com</code> (and <code>www.elitmus.com</code>).  Given that we are not in great love with subdomains. We had to find a workaround. And here is what we did:</p>
 
-<p>One option was to carry out the migration in one go, while the website was offline. This meant the downtime would have been several hours, instead of minutes. Obviously, not an acceptable option at all.</p>
+<p>Since we use nginx to server our business website, all we had to do was to write a simple traffic-cop rule. What this rule did was, to parse the request url to see if it starts with <code>/blog/</code>. If yes, then the request is reverse proxied to GitHub Pages. If no, then it is served from local disk. </p>
 
-<p>Some R&amp;D was all it took to discover how to proceed with the original approach.</p>
+<p>The relevant lines from the config file are here</p>
 
-<p>RDS comes with a bunch of stored procedures, which help you configure it as a slave. There is almost a one-to-one mapping of these stored procedures with the commands that are disallowed.</p>
-
-<table class="table table-bordered table-condensed table-hover">
-<tr><th>MySQL Command</th><th>Corrosponding Stored Proc</th></tr>
-<tr><td>CHANGE MASTER TO</td><td>mysql.rds_set_external_master</td></tr>
-<tr><td>START SLAVE</td><td>mysql.rds_start_replication</td></tr>
-<tr><td>STOP SLAVE</td><td>mysql.rds_stop_replication</td></tr>
-<tr><td>RESET MASTER</td><td>mysql.rds_reset_external_master </td></tr>
-</table>
-
-<p>So, Using these stored procedures, you can now configure your RDS instance as a slave to your self-managed MySQL server</p>
-
-<p>After loading a full dump to RDS, Call the stored procedure <code>mysql.rds_set_external_master</code> like this</p>
-
-<pre><code>CALL mysql.rds_set_external_master ('servername', port, 'user', 'password', 'binlog-file', binlog-offset, 0);
+<pre><code>	location /blog/ {
+	    proxy_pass       http://shireeshj.github.io/;
+	    proxy_redirect off;
+	    proxy_set_header Host &lt;shireeshj.github.io&gt;;
+	    proxy_set_header X-Host &lt;shireeshj.github.io&gt;;;
+	    proxy_set_header X-Real-IP $remote_addr;
+	    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	  }
 </code></pre>
 
-<p>Then</p>
+<p>This is how we get free hosting for our blog, yet serve it from our official URL. If GitHub pages ever stops us from reverse proxying, we shall simply spin our own webserver to run this static site and reverse proxy to that web server.</p>
 
-<pre><code>CALL mysql.rds_start_replication;
-</code></pre>
-
-<p>This will make RDS a slave of your self managed mysql server. You can run “SHOW SLAVE STATUS” to see its working.</p>
-
-<p>When it is time to promote RDS to master. You call these stored procedures</p>
-
-<pre><code>CALL mysql.rds_stop_replication;
-
-CALL mysql.rds_reset_external_master;
-</code></pre>
-
-<p>That’s it. Now point your applications to the RDS instance and take your site live.</p>
-
-<p><strong>Note:</strong></p>
-
-<p>For your RDS to work as a slave, it needs permissions to connect to port 3306 of your current master. Make sure you open this port for the RDS instance.</p>
-
-<p>You can run the following command to find out the ip address of your rds instance</p>
-
-<pre><code>ping -c rdsname.cpesx66wwe7y.ap-southeast-1.rds.amazonaws.com
-</code></pre>
 
                 </div>
                 <div class="entry-tags">
                   <div class=' social-sharing pull-right'>        
   
     <span class="social-share-facebook">
-       <a href="https://www.facebook.com/sharer/sharer.php?u=/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
+       <a href="https://www.facebook.com/sharer/sharer.php?u=/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-twitter">
-       <a href="https://twitter.com/share?hashtags=technology&text=Setting Up Amazon RDS as a Slave to a self-managed MySQL server&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
+       <a href="https://twitter.com/share?hashtags=technology&text=How we host our blog on GitHub pages and yet serve it from our own Sub-URL&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-googleplus">
-       <a href="https://plus.google.com/share?url=/blog/technology/setting-up-amazon-rds-as-a-slave-to-a-self-managed-mysql-server/" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square fa-lg"></i> +1</a>
+       <a href="https://plus.google.com/share?url=/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/" title="Share on Google Plus" itemprop="GooglePlus"><i class="fa fa-google-plus-square fa-lg"></i> +1</a>
     </span><!-- /.social-share -->
      
 </div>
@@ -374,25 +335,21 @@ CALL mysql.rds_reset_external_master;
 
                 
   
+
+  
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="container-fluid">
           <div class="row">
             <div class="col-xs-6 col-md-4">
               <center>
-                <img src="/blog/images/shireeshj.png" alt="Shireesh Jayashetty photo" class="author-photo img-circle img-responsive"/>
-                <span class="author vcard"><span class="fn">Shireesh Jayashetty</span></span>
+                <img src="/blog/images/mohitnegi.jpg" alt="Mohit Negi photo" class="author-photo img-circle img-responsive"/>
+                <span class="author vcard"><span class="fn">Mohit Negi</span></span>
 
                 <div class="nav-icon-size-reduce social-icons">
                   
-                    <a href="http://twitter.com/shireeshj"  title="Shireesh Jayashetty on Twitter"  target="_blank"><i class="fa fa-twitter "></i></a>
                   
                   
-                  
-                  
-
-                  
-                    <a href="http://linkedin.com/in/shireeshj" title="Shireesh Jayashetty on LinkedIn" target="_blank"><i class="fa fa-linkedin "></i></a>
                   
 
                   
@@ -402,7 +359,9 @@ CALL mysql.rds_reset_external_master;
                   
 
                   
-                    <a href="http://github.com/shireeshj" title="Shireesh Jayashetty on Github" target="_blank"><i class="fa fa-github "></i></a>
+
+                  
+                    <a href="http://github.com/mohitnegi" title="Mohit Negi on Github" target="_blank"><i class="fa fa-github "></i></a>
                   
 
                      
@@ -415,15 +374,13 @@ CALL mysql.rds_reset_external_master;
 
             <div class="col-md-8">
               
-                <span class="author-bio">Shireesh heads technology at eLitmus. He is generally curious about things, especially technology. His curiosity almost cost him his first job when he hacked into a customer's system to gain unauthorized internet access (mid '90s). He was lucky, his employer saw this as a potential rather than a threat.</span>
+                <span class="author-bio">Mohit is a member of eLitmus technology team, He is passionate about trekking, bouldering and football. And in between makes time for solving operational problem via technology.</span>
               
             </div>
           </div>
         </div>
       </div>
     </div>
-
-  
 
   
 
@@ -438,10 +395,8 @@ CALL mysql.rds_reset_external_master;
             <nav class="navbar nav-justified" role="navigation">
               <ul class="pager">
                 
-                  <li class="previous showElem"><a href="/blog/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on/" title="Beware of creating $HOME/.ssh folder by hand, when SELinux is turned on">&larr;<span class="showPrevNex"> Previous </span> </a></li>
+                  <li class="previous showElem"><a href="/blog/technology/using-monit-to-get-email-alert-on-unauthorized-login/" title="Using Monit to get email alert on unauthorized login">&larr;<span class="showPrevNex"> Previous </span> </a></li>
                 
-                
-                  <li class="next showElem"><a href="/blog/technology/gotchas-while-syntactically-translating-aes-encryption-logic-from-php-to-ruby/" title="Gotcha's while syntactically translating AES encryption logic from PHP to Ruby"> <span class='showPrevNex'> Next </span> &rarr; </a></li>
                 
               </ul>
             </nav>

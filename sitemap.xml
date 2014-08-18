@@ -75,6 +75,10 @@
 
     
     <url>
+        <loc>https://www.elitmus.com/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/</loc>
+    </url>
+    
+    <url>
         <loc>https://www.elitmus.com/blog/technology/using-monit-to-get-email-alert-on-unauthorized-login/</loc>
     </url>
     
