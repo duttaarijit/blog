@@ -21,6 +21,16 @@ function getMoreData(index, data, originalData, searchTerm) {
 
 }
 
+function getHtmlData( urltext, searchTerm ) {
+    urltext = "/blog" + urltext;
+    $.ajax({url: urltext}).done(function(data){
+        console.log(searchTerm);
+        var indx = data.indexOf(searchTerm);
+        console.log('the index is '+indx);
+        return data;
+    });
+}
+
 function getSearchText(opt,search){
     console.log('inside seartchtext '+ opt);
     if (opt == "All" || opt == undefined){
@@ -66,6 +76,7 @@ $(document).ready(function() {
                 for (var index in result) {
                     textToInsert = textToInsert + sliceText + result[index].ref + " '> <b>" + urlToTitle(result[index].ref) + "</b><br><p class='list-group-item-text'>";
                     highlighted = getMoreData(result[index].ref, jsonData, originalJsonData, this.value) + "</p></a>"
+                    console.log(getHtmlData(result[index].ref,this.value));
                     textToInsert = textToInsert + highlighted;
                 }
 
