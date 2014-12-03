@@ -9,7 +9,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="/feed.xml" />
 <link rel="alternate" type="text/html" href="/" />
-<updated>2014-12-03T10:30:34+05:30</updated>
+<updated>2014-12-03T11:31:45+05:30</updated>
 <id>/</id>
 <author>
   <name>eLitmus.com</name>
@@ -67,12 +67,12 @@
 &lt;p&gt;&lt;img src=&quot;/blog/images/airtel3g-yosemite/3-options-profile-management.png&quot; alt=&quot;Profile Management&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;step-6&quot;&gt;Step 6:&lt;/h3&gt;
-&lt;p&gt;Click on “New” button to create a new profile. Give it a name, such as “airtel 3g”. Also, make sure the “Access Nunber” is set to &lt;code&gt;*99#&lt;/code&gt;. Click “Save”, then “Ok”.&lt;/p&gt;
+&lt;p&gt;Click on “New” button to create a new profile. Give it a name, such as “airtel 3g”. Also, make sure the “Access Number” is set to &lt;code&gt;*99#&lt;/code&gt;. Click “Save”, then “Ok”.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/images/airtel3g-yosemite/4-new-profile-and-access-number.png&quot; alt=&quot;Configuring a new profile&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;step-7&quot;&gt;Step 7:&lt;/h3&gt;
-&lt;p&gt;Insert your Dongel into an USB port. You should see “Mobile Partner” application starting automatically. Choose the profile you created in Step 6 (“airtel 3g”) and “Connect”&lt;/p&gt;
+&lt;p&gt;Insert your Dongel into an USB port. You should see “Mobile Partner” application starting automatically. Choose the profile you created in Step 6 (“airtel 3g”) and “Connect”.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/images/airtel3g-yosemite/5-dialer-screen.png&quot; alt=&quot;The Dialer Screen&quot; /&gt;&lt;/p&gt;
 
