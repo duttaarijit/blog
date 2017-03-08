@@ -9,7 +9,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="/feed.xml" />
 <link rel="alternate" type="text/html" href="/" />
-<updated>2017-03-08T15:32:03+05:30</updated>
+<updated>2017-03-08T17:18:44+05:30</updated>
 <id>/</id>
 <author>
   <name>eLitmus.com</name>
@@ -33,50 +33,14 @@
   <category scheme="/tags/#ELB" term="ELB" /><category scheme="/tags/#NGINX" term="NGINX" /><category scheme="/tags/#https%20offloading" term="https offloading" /><category scheme="/tags/#OAuth" term="OAuth" /><category scheme="/tags/#Rails" term="Rails" />
   <content type="html">
   
-    &lt;head&gt;
-  &lt;style&gt;
-  table {
-      font-family: arial, sans-serif;
-      border-collapse: collapse;
-      width: 60%;
-      font-size: 16px;
-  }
-
-  td, th {
-      text-align: left;
-      padding: 8px;
-  }
-
-  .back-trace-div{
-    color: #C7C7C7;
-    background: #222;
-    line-height: 1.4em;
-    font-size: 13px;
-    padding: 2px 8px;
-    vertical-align: top;
-    white-space: nowrap;
-    border-top: none;
-    width: 100%;
-    margin: 0;
-    text-align: left;
-    border: 0;
-    outline: 0;
-  }
-
-  .back-trace-row{
-    color: #aaa; 
-    font-size: 113%;
-  }
-  &lt;/style&gt;
-&lt;/head&gt;
-&lt;p&gt;“HTTPS everywhere” is not a luxury anymore. It is a necessity. Thankfully, obtaining an SSL certificate has become easier too, with initiatives such as &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;, &lt;a href=&quot;https://www.geotrust.com/ssl/free-ssl-certificate/&quot;&gt;GeoTrust&lt;/a&gt;, &lt;a href=&quot;https://www.positivessl.com/&quot;&gt;Positive SSL&lt;/a&gt;, &lt;a href=&quot;https://www.startssl.com/&quot;&gt;StartSSL&lt;/a&gt;. Even cloud based services such as &lt;a href=&quot;https://www.cloudflare.com/&quot;&gt;Cloudflare&lt;/a&gt; and &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt; provide free SSL certificates to their customers.&lt;/p&gt;
+    &lt;p&gt;“HTTPS everywhere” is not a luxury anymore. It is a necessity. Thankfully, obtaining an SSL certificate has become easier too, with initiatives such as &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;, &lt;a href=&quot;https://www.geotrust.com/ssl/free-ssl-certificate/&quot;&gt;GeoTrust&lt;/a&gt;, &lt;a href=&quot;https://www.positivessl.com/&quot;&gt;Positive SSL&lt;/a&gt;, &lt;a href=&quot;https://www.startssl.com/&quot;&gt;StartSSL&lt;/a&gt;. Even cloud based services such as &lt;a href=&quot;https://www.cloudflare.com/&quot;&gt;Cloudflare&lt;/a&gt; and &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt; provide free SSL certificates to their customers.&lt;/p&gt;
 
 &lt;p&gt;&lt;b&gt;Here is setting some context to help the reader appreciate the discussion&lt;/b&gt;:&lt;br /&gt;
 We host our rails applications on &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt;. We generally use three different environments - development, staging and production. Development environment is generally local to a developer while staging and production are hosted on the cloud. There is a minor difference in the way we configure our staging and production environments. Our staging environment typically contains a single machine instance hosting our application. This single instance is exposed to internet directly (has a public IP). On the other hand, our production environment typically contains a cluster of instances for the sake of horizontal scaling. These instances typically do not have a public IP and hence not exposed to internet directly. We put this cluster behind an internet-facing &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;Elastic Load Balancer (ELB)&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;We use &lt;a href=&quot;https://docs.chef.io/chef_solo.html&quot;&gt;chef-solo&lt;/a&gt; to manage our cloud infrastructure as well as to deploy code to various environments.&lt;/p&gt;
 
-&lt;h4&gt;&lt;b&gt;The Problem Statement:&lt;/b&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;the-problem-statement&quot;&gt;&lt;strong&gt;The Problem Statement:&lt;/strong&gt;&lt;/h4&gt;
 &lt;p&gt;For the sake of this discussion, we shall limit ourselves to configuring SSL certificates obtained from the two free providers, namely &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; and &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Using &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; in a clustered setup is tricky, since you need to make one of the instances stateful, in the sense, one instance needs to be given the responsibility of obtaining and renewing SSL certificate from &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;. All other instances need to copy this certificate every time its renewed. This requirement unnecessarily complicates the setup and also takes away some amount of flexibility. Also, &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; does not issue wildcard certificates and the validity of a certificate is just 90 days&lt;/p&gt;
@@ -85,18 +49,18 @@ We host our rails applications on &lt;a href=&quot;https://aws.amazon.com/&quot;
 
 &lt;p&gt;This leaves us with these options&lt;/p&gt;
 
-&lt;table&gt;
+&lt;table class=&quot;custom_table&quot;&gt;
   &lt;tr&gt;
-    &lt;th&gt;Environment&lt;/th&gt;
-    &lt;th&gt;Best Option&lt;/th&gt;
+    &lt;th class=&quot;custom-t&quot;&gt;Environment&lt;/th&gt;
+    &lt;th class=&quot;custom-t&quot;&gt;Best Option&lt;/th&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-    &lt;td&gt;Staging&lt;/td&gt;
-    &lt;td&gt;Let&#39;s Encrypt&lt;/td&gt;
+    &lt;td class=&quot;custom-t&quot;&gt;Staging&lt;/td&gt;
+    &lt;td class=&quot;custom-t&quot;&gt;Let&#39;s Encrypt&lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-    &lt;td&gt;Production&lt;/td&gt;
-    &lt;td&gt;Amazon AWS&lt;/td&gt;
+    &lt;td class=&quot;custom-t&quot;&gt;Production&lt;/td&gt;
+    &lt;td class=&quot;custom-t&quot;&gt;Amazon AWS&lt;/td&gt;
   &lt;/tr&gt;
 &lt;/table&gt;
 &lt;p&gt;&lt;br /&gt;
@@ -106,7 +70,7 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;However, the same application, in production environment, started throwing &lt;code&gt;CSRF detected&lt;/code&gt; Error whenever an &lt;a href=&quot;https://oauth.net/2/&quot;&gt;OAuth2&lt;/a&gt; callback happened. This was really strange. Our application integrated with two different OAuth providers, and the problem was consistent with both these providers.&lt;/p&gt;
 
-&lt;h4&gt;&lt;b&gt;What&#39;s the issue?&lt;/b&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;whats-the-issue&quot;&gt;&lt;strong&gt;What’s the issue?&lt;/strong&gt;&lt;/h4&gt;
 
 &lt;p&gt;The only difference between our Staging and Production setups was the &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;ELB&lt;/a&gt;.&lt;/p&gt;
 
@@ -118,9 +82,9 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;&lt;a href=&quot;https://oauth.net/2/&quot;&gt;OAuth2&lt;/a&gt;, by design, does not accept plain HTTP callbacks (unless it is to localhost).&lt;/p&gt;
 
-&lt;p&gt;&lt;b&gt;How do we move forward?&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;How do we move forward?&lt;/strong&gt;&lt;/p&gt;
 
-&lt;h4&gt;&lt;b&gt;PoC to prove the theory&lt;/b&gt;&lt;/h4&gt;
+&lt;h4 id=&quot;poc-to-prove-the-theory&quot;&gt;&lt;strong&gt;PoC to prove the theory&lt;/strong&gt;&lt;/h4&gt;
 
 &lt;p&gt;Just to confirm what we think is the cause, we &lt;b&gt;enabled HTTPS&lt;/b&gt; on &lt;a href=&quot;https://www.nginx.com/resources/wiki/&quot;&gt;NGINX&lt;/a&gt; (like we did in our staging environment). This was in addition to HTTPS on the Load balancer. We reconfigured the Load Balancer to NOT offload HTTPS but forward the request as-is to &lt;a href=&quot;https://www.nginx.com/resources/wiki/&quot;&gt;NGINX&lt;/a&gt;.&lt;/p&gt;
 
@@ -130,7 +94,7 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;But the question now is, how do we achieve our desired configuration of offloading HTTPS at the &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;ELB&lt;/a&gt; ? Is it just not possible ?&lt;/p&gt;
 
-&lt;p&gt;&lt;b&gt;The Solution&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The Solution&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;We have been using &lt;b&gt;X-Forwarded-For&lt;/b&gt; header while reverse proxying to unicorn so that our rails application knows the client IP address (rather than the IP address of the Load Balancer). We need this for logging and tracking.&lt;/p&gt;
 
@@ -147,30 +111,9 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;Voila, Rails is happy and things are back to normal!&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-nginx&quot; data-lang=&quot;nginx&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt;           &lt;span class=&quot;kn&quot;&gt;listen&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ssl&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;spdy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt;           &lt;span class=&quot;kn&quot;&gt;server_name&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;www.site.com&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;           &lt;span class=&quot;kn&quot;&gt;ssl_certificate&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;----&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;           &lt;span class=&quot;s&quot;&gt;ssl_certificate_key&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;           &lt;span class=&quot;s&quot;&gt;ssl_protocols&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;           &lt;span class=&quot;s&quot;&gt;ssl_ciphers&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;---&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;           &lt;span class=&quot;s&quot;&gt;ssl_prefer_server_ciphers&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;           &lt;span class=&quot;kn&quot;&gt;location&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_pass&lt;/span&gt;      &lt;span class=&quot;s&quot;&gt;http://www.site.com:12345/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_read_timeout&lt;/span&gt;      &lt;span class=&quot;mi&quot;&gt;90&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_redirect&lt;/span&gt;  &lt;span class=&quot;s&quot;&gt;http://www.site.com:12345/&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;https://www.site.com&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;Host&lt;/span&gt;               &lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;X-Real-IP&lt;/span&gt;          &lt;span class=&quot;nv&quot;&gt;$remote_addr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;X-Forwarded-For&lt;/span&gt;    &lt;span class=&quot;nv&quot;&gt;$proxy_add_x_forwarded_for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;X-Forwarded-Host&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;$host:443&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;X-Forwarded-Server&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;                   &lt;span class=&quot;kn&quot;&gt;proxy_set_header&lt;/span&gt;        &lt;span class=&quot;s&quot;&gt;X-Forwarded-Proto&lt;/span&gt;  &lt;span class=&quot;s&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;           &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;&lt;u&gt;Details:&lt;/u&gt;&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;b&gt;&lt;u&gt;Details:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;Csrf detected!&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Csrf detected!&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Rails bothers about SSL only at two places, 
 &lt;br /&gt;
@@ -179,13 +122,13 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 2. At external included Gem like &lt;a href=&quot;https://github.com/omniauth/omniauth&quot;&gt;Omniauth&lt;/a&gt;. 
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;In &lt;b&gt;&lt;em&gt;Rails environment config&lt;/em&gt;&lt;/b&gt;.&lt;/p&gt;
+&lt;p&gt;In &lt;strong&gt;&lt;em&gt;Rails environment config&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;force_ssl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This does the trick, but doesn’t seem like a good idea to enable this option in Rails because, we offload https at &lt;a href=&quot;https://www.nginx.com/resources/wiki/&quot;&gt;NGINX&lt;/a&gt;. For Rails, request came in http, so it does a permanent redirect to https, which ends in a infinite loop.&lt;/p&gt;
 
-&lt;p&gt;Our stack trace gave a clue that error might be inside &lt;q&gt;&lt;em&gt;&lt;b&gt;omniauth&lt;/b&gt;&lt;/em&gt;&lt;/q&gt; gem.&lt;/p&gt;
+&lt;p&gt;Our stack trace gave a clue that error might be inside &lt;q&gt;&lt;strong&gt;&lt;em&gt;omniauth&lt;/em&gt;&lt;/strong&gt;&lt;/q&gt; gem.&lt;/p&gt;
 
 &lt;div class=&quot;back-trace-div&quot;&gt;
     &lt;span class=&quot;back-trace-row&quot;&gt;&lt;b&gt;actionpack-4.2.7.1&lt;/b&gt;/lib/abstract_controller/&lt;b&gt;base.rb&lt;/b&gt;:132 → process&lt;/span&gt;&lt;br /&gt;
