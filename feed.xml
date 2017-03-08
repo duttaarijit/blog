@@ -9,7 +9,7 @@
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
 <link rel="self" type="application/atom+xml" href="/feed.xml" />
 <link rel="alternate" type="text/html" href="/" />
-<updated>2017-03-08T17:18:44+05:30</updated>
+<updated>2017-03-08T21:07:43+05:30</updated>
 <id>/</id>
 <author>
   <name>eLitmus.com</name>
@@ -35,12 +35,12 @@
   
     &lt;p&gt;“HTTPS everywhere” is not a luxury anymore. It is a necessity. Thankfully, obtaining an SSL certificate has become easier too, with initiatives such as &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;, &lt;a href=&quot;https://www.geotrust.com/ssl/free-ssl-certificate/&quot;&gt;GeoTrust&lt;/a&gt;, &lt;a href=&quot;https://www.positivessl.com/&quot;&gt;Positive SSL&lt;/a&gt;, &lt;a href=&quot;https://www.startssl.com/&quot;&gt;StartSSL&lt;/a&gt;. Even cloud based services such as &lt;a href=&quot;https://www.cloudflare.com/&quot;&gt;Cloudflare&lt;/a&gt; and &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt; provide free SSL certificates to their customers.&lt;/p&gt;
 
-&lt;p&gt;&lt;b&gt;Here is setting some context to help the reader appreciate the discussion&lt;/b&gt;:&lt;br /&gt;
-We host our rails applications on &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt;. We generally use three different environments - development, staging and production. Development environment is generally local to a developer while staging and production are hosted on the cloud. There is a minor difference in the way we configure our staging and production environments. Our staging environment typically contains a single machine instance hosting our application. This single instance is exposed to internet directly (has a public IP). On the other hand, our production environment typically contains a cluster of instances for the sake of horizontal scaling. These instances typically do not have a public IP and hence not exposed to internet directly. We put this cluster behind an internet-facing &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;Elastic Load Balancer (ELB)&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id=&quot;here-is-setting-some-context-to-help-the-reader-appreciate-the-discussion&quot;&gt;&lt;strong&gt;Here is setting some context to help the reader appreciate the discussion&lt;/strong&gt;:&lt;/h4&gt;
+&lt;p&gt;We host our rails applications on &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt;. We generally use three different environments - development, staging and production. Development environment is generally local to a developer while staging and production are hosted on the cloud. There is a minor difference in the way we configure our staging and production environments. Our staging environment typically contains a single machine instance hosting our application. This single instance is exposed to internet directly (has a public IP). On the other hand, our production environment typically contains a cluster of instances for the sake of horizontal scaling. These instances typically do not have a public IP and hence not exposed to internet directly. We put this cluster behind an internet-facing &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;Elastic Load Balancer (ELB)&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;We use &lt;a href=&quot;https://docs.chef.io/chef_solo.html&quot;&gt;chef-solo&lt;/a&gt; to manage our cloud infrastructure as well as to deploy code to various environments.&lt;/p&gt;
 
-&lt;h4 id=&quot;the-problem-statement&quot;&gt;&lt;strong&gt;The Problem Statement:&lt;/strong&gt;&lt;/h4&gt;
+&lt;h5 id=&quot;the-problem-statement&quot;&gt;&lt;strong&gt;The Problem Statement:&lt;/strong&gt;&lt;/h5&gt;
 &lt;p&gt;For the sake of this discussion, we shall limit ourselves to configuring SSL certificates obtained from the two free providers, namely &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; and &lt;a href=&quot;https://aws.amazon.com/&quot;&gt;Amazon AWS&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Using &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; in a clustered setup is tricky, since you need to make one of the instances stateful, in the sense, one instance needs to be given the responsibility of obtaining and renewing SSL certificate from &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt;. All other instances need to copy this certificate every time its renewed. This requirement unnecessarily complicates the setup and also takes away some amount of flexibility. Also, &lt;a href=&quot;https://letsencrypt.org/&quot;&gt;Let’s Encrypt&lt;/a&gt; does not issue wildcard certificates and the validity of a certificate is just 90 days&lt;/p&gt;
@@ -70,7 +70,7 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;However, the same application, in production environment, started throwing &lt;code&gt;CSRF detected&lt;/code&gt; Error whenever an &lt;a href=&quot;https://oauth.net/2/&quot;&gt;OAuth2&lt;/a&gt; callback happened. This was really strange. Our application integrated with two different OAuth providers, and the problem was consistent with both these providers.&lt;/p&gt;
 
-&lt;h4 id=&quot;whats-the-issue&quot;&gt;&lt;strong&gt;What’s the issue?&lt;/strong&gt;&lt;/h4&gt;
+&lt;h5 id=&quot;whats-the-issue&quot;&gt;&lt;strong&gt;What’s the issue?&lt;/strong&gt;&lt;/h5&gt;
 
 &lt;p&gt;The only difference between our Staging and Production setups was the &lt;a href=&quot;https://aws.amazon.com/elasticloadbalancing/&quot;&gt;ELB&lt;/a&gt;.&lt;/p&gt;
 
@@ -82,9 +82,9 @@ We went ahead with this choice. Using &lt;a href=&quot;https://docs.chef.io/chef
 
 &lt;p&gt;&lt;a href=&quot;https://oauth.net/2/&quot;&gt;OAuth2&lt;/a&gt;, by design, does not accept plain HTTP callbacks (unless it is to localhost).&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;How do we move forward?&lt;/strong&gt;&lt;/p&gt;
+&lt;h4 id=&quot;how-do-we-move-forward&quot;&gt;&lt;strong&gt;How do we move forward?&lt;/strong&gt;&lt;/h4&gt;
 
-&lt;h4 id=&quot;poc-to-prove-the-theory&quot;&gt;&lt;strong&gt;PoC to prove the theory&lt;/strong&gt;&lt;/h4&gt;
+&lt;h5 id=&quot;poc-to-prove-the-theory&quot;&gt;&lt;strong&gt;PoC to prove the theory&lt;/strong&gt;&lt;/h5&gt;
 
 &lt;p&gt;Just to confirm what we think is the cause, we &lt;b&gt;enabled HTTPS&lt;/b&gt; on &lt;a href=&quot;https://www.nginx.com/resources/wiki/&quot;&gt;NGINX&lt;/a&gt; (like we did in our staging environment). This was in addition to HTTPS on the Load balancer. We reconfigured the Load Balancer to NOT offload HTTPS but forward the request as-is to &lt;a href=&quot;https://www.nginx.com/resources/wiki/&quot;&gt;NGINX&lt;/a&gt;.&lt;/p&gt;
 

@@ -289,12 +289,12 @@
                 <div class="post-content-justify">
                   <p>“HTTPS everywhere” is not a luxury anymore. It is a necessity. Thankfully, obtaining an SSL certificate has become easier too, with initiatives such as <a href="https://letsencrypt.org/">Let’s Encrypt</a>, <a href="https://www.geotrust.com/ssl/free-ssl-certificate/">GeoTrust</a>, <a href="https://www.positivessl.com/">Positive SSL</a>, <a href="https://www.startssl.com/">StartSSL</a>. Even cloud based services such as <a href="https://www.cloudflare.com/">Cloudflare</a> and <a href="https://aws.amazon.com/">Amazon AWS</a> provide free SSL certificates to their customers.</p>
 
-<p><b>Here is setting some context to help the reader appreciate the discussion</b>:<br />
-We host our rails applications on <a href="https://aws.amazon.com/">Amazon AWS</a>. We generally use three different environments - development, staging and production. Development environment is generally local to a developer while staging and production are hosted on the cloud. There is a minor difference in the way we configure our staging and production environments. Our staging environment typically contains a single machine instance hosting our application. This single instance is exposed to internet directly (has a public IP). On the other hand, our production environment typically contains a cluster of instances for the sake of horizontal scaling. These instances typically do not have a public IP and hence not exposed to internet directly. We put this cluster behind an internet-facing <a href="https://aws.amazon.com/elasticloadbalancing/">Elastic Load Balancer (ELB)</a>.</p>
+<h4 id="here-is-setting-some-context-to-help-the-reader-appreciate-the-discussion"><strong>Here is setting some context to help the reader appreciate the discussion</strong>:</h4>
+<p>We host our rails applications on <a href="https://aws.amazon.com/">Amazon AWS</a>. We generally use three different environments - development, staging and production. Development environment is generally local to a developer while staging and production are hosted on the cloud. There is a minor difference in the way we configure our staging and production environments. Our staging environment typically contains a single machine instance hosting our application. This single instance is exposed to internet directly (has a public IP). On the other hand, our production environment typically contains a cluster of instances for the sake of horizontal scaling. These instances typically do not have a public IP and hence not exposed to internet directly. We put this cluster behind an internet-facing <a href="https://aws.amazon.com/elasticloadbalancing/">Elastic Load Balancer (ELB)</a>.</p>
 
 <p>We use <a href="https://docs.chef.io/chef_solo.html">chef-solo</a> to manage our cloud infrastructure as well as to deploy code to various environments.</p>
 
-<h4 id="the-problem-statement"><strong>The Problem Statement:</strong></h4>
+<h5 id="the-problem-statement"><strong>The Problem Statement:</strong></h5>
 <p>For the sake of this discussion, we shall limit ourselves to configuring SSL certificates obtained from the two free providers, namely <a href="https://letsencrypt.org/">Let’s Encrypt</a> and <a href="https://aws.amazon.com/">Amazon AWS</a>.</p>
 
 <p>Using <a href="https://letsencrypt.org/">Let’s Encrypt</a> in a clustered setup is tricky, since you need to make one of the instances stateful, in the sense, one instance needs to be given the responsibility of obtaining and renewing SSL certificate from <a href="https://letsencrypt.org/">Let’s Encrypt</a>. All other instances need to copy this certificate every time its renewed. This requirement unnecessarily complicates the setup and also takes away some amount of flexibility. Also, <a href="https://letsencrypt.org/">Let’s Encrypt</a> does not issue wildcard certificates and the validity of a certificate is just 90 days</p>
@@ -324,7 +324,7 @@ We went ahead with this choice. Using <a href="https://docs.chef.io/chef_solo.ht
 
 <p>However, the same application, in production environment, started throwing <code>CSRF detected</code> Error whenever an <a href="https://oauth.net/2/">OAuth2</a> callback happened. This was really strange. Our application integrated with two different OAuth providers, and the problem was consistent with both these providers.</p>
 
-<h4 id="whats-the-issue"><strong>What’s the issue?</strong></h4>
+<h5 id="whats-the-issue"><strong>What’s the issue?</strong></h5>
 
 <p>The only difference between our Staging and Production setups was the <a href="https://aws.amazon.com/elasticloadbalancing/">ELB</a>.</p>
 
@@ -336,9 +336,9 @@ We went ahead with this choice. Using <a href="https://docs.chef.io/chef_solo.ht
 
 <p><a href="https://oauth.net/2/">OAuth2</a>, by design, does not accept plain HTTP callbacks (unless it is to localhost).</p>
 
-<p><strong>How do we move forward?</strong></p>
+<h4 id="how-do-we-move-forward"><strong>How do we move forward?</strong></h4>
 
-<h4 id="poc-to-prove-the-theory"><strong>PoC to prove the theory</strong></h4>
+<h5 id="poc-to-prove-the-theory"><strong>PoC to prove the theory</strong></h5>
 
 <p>Just to confirm what we think is the cause, we <b>enabled HTTPS</b> on <a href="https://www.nginx.com/resources/wiki/">NGINX</a> (like we did in our staging environment). This was in addition to HTTPS on the Load balancer. We reconfigured the Load Balancer to NOT offload HTTPS but forward the request as-is to <a href="https://www.nginx.com/resources/wiki/">NGINX</a>.</p>
 
