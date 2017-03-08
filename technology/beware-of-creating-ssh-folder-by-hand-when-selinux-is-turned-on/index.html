@@ -28,6 +28,10 @@
 
     
 
+    
+
+    
+
 
 
 
@@ -47,7 +51,7 @@
 
 
 
-<link rel="canonical" href="https://www.elitmus.com/blog/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on/">
+<link rel="canonical" href="/blog/technology/beware-of-creating-ssh-folder-by-hand-when-selinux-is-turned-on/">
 <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="eLitmus Blog Feed">
 
 
@@ -280,7 +284,7 @@
                 <div class="post-content-justify">
                   <p>I was experimenting with <code>chef</code> to manage our Linux boxes. As a standard practice, our application user <code>deployer</code> is homed in <code>/applications/deployer</code> rather than the usual <code>/home/deployer</code>.</p>
 
-<p>To enable password less login, I appended my public key to <code>~/.ssh/authorized_keys</code> </p>
+<p>To enable password less login, I appended my public key to <code>~/.ssh/authorized_keys</code></p>
 
 <pre><code> ssh-copy-id -i ~/.ssh/id_rsa deployer@remote.server
 </code></pre>
@@ -296,7 +300,7 @@
 
 <p>Discovered that if <code>.ssh</code> folder was created by hand (or even the folder containing <code>.ssh</code> folder), we need to do few additional things.</p>
 
-<p><strong>Step 1:</strong> </p>
+<p><strong>Step 1:</strong></p>
 
 <p>Open this file /etc/selinux/targeted/contexts/files/file_contexts.homedirs and append the following line to the bottom</p>
 
@@ -337,9 +341,10 @@
                 </div>
                 <div class="clearfix"><br/></div>
 
-                
+                <div class="panel panel-default">
+
   
-    <div class="panel panel-default">
+    
       <div class="panel-body">
         <div class="container-fluid">
           <div class="row">
@@ -386,7 +391,6 @@
           </div>
         </div>
       </div>
-    </div>
 
   
 
@@ -396,6 +400,11 @@
 
   
 
+  
+
+  
+
+</div>
 
                 
               </div><!-- /.entry-content -->

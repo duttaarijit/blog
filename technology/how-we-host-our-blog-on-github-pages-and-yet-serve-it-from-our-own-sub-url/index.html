@@ -26,6 +26,10 @@
 
     
 
+    
+
+    
+
 
 
 
@@ -45,7 +49,7 @@
 
 
 
-<link rel="canonical" href="https://www.elitmus.com/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/">
+<link rel="canonical" href="/blog/technology/how-we-host-our-blog-on-github-pages-and-yet-serve-it-from-our-own-sub-url/">
 <link href="/blog/feed.xml" type="application/atom+xml" rel="alternate" title="eLitmus Blog Feed">
 
 
@@ -285,13 +289,13 @@
 
 <p>It is easy to map a <code>github.io</code> url such as this, to a subdomain. For example, it is easy to map the url to <code>https://blog.elitmus.com/blog/</code>.  All you need to do is check-in a file named CNAME into the root folder of your git repo that contains your static site.</p>
 
-<p>What if you want your static site to be served from domain apex? That is easy too.  <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages">GitHub pages help</a> explains this in a simple manner. </p>
+<p>What if you want your static site to be served from domain apex? That is easy too.  <a href="https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages">GitHub pages help</a> explains this in a simple manner.</p>
 
 <p>However, If your domain apex is already taken, say by your other website, you have a problem.  To host your static site on a domain apex (or a sub-url of domain apex) the domain apex should be available exclusively for use by github pages.</p>
 
 <p>We had to overcome this very problem, since our business website is already hosted on <code>elitmus.com</code> (and <code>www.elitmus.com</code>).  Given that we are not in great love with subdomains. We had to find a workaround. And here is what we did:</p>
 
-<p>Since we use nginx to server our business website, all we had to do was to write a simple traffic-cop rule. What this rule did was, to parse the request url to see if it starts with <code>/blog/</code>. If yes, then the request is reverse proxied to GitHub Pages. If no, then it is served from local disk. </p>
+<p>Since we use nginx to server our business website, all we had to do was to write a simple traffic-cop rule. What this rule did was, to parse the request url to see if it starts with <code>/blog/</code>. If yes, then the request is reverse proxied to GitHub Pages. If no, then it is served from local disk.</p>
 
 <p>The relevant lines from the config file are here</p>
 
@@ -326,11 +330,12 @@
                 </div>
                 <div class="clearfix"><br/></div>
 
-                
+                <div class="panel panel-default">
+
   
 
   
-    <div class="panel panel-default">
+    
       <div class="panel-body">
         <div class="container-fluid">
           <div class="row">
@@ -373,7 +378,6 @@
           </div>
         </div>
       </div>
-    </div>
 
   
 
@@ -381,6 +385,11 @@
 
   
 
+  
+
+  
+
+</div>
 
                 
               </div><!-- /.entry-content -->
