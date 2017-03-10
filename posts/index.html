@@ -275,10 +275,25 @@
 <div class="footer-color">
   <footer role="contentinfo">
     <center>
-      	<span class='footer-text'>
-		&copy;  2005-<script> document.write(new Date().getFullYear()) </script>, eLitmus.com. | <a class='footer-text' href="/terms_of_use/">Terms of Use</a> &middot; <a  class='footer-text' href="/privacy_policy/">Privacy Policy</a>
+        <div id='discourse-comments'></div>
 
-	</span>
+  <script type="text/javascript">
+    DiscourseEmbed = { discourseUrl: 'https://adda.elitmus.com/',
+                       discourseEmbedUrl: https://www.elitmus.com/blog/posts/ 
+                     };
+
+
+    (function() {
+      var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+      d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+    })();
+  </script>
+
+  <span class='footer-text'>
+    &copy;  2005-<script> document.write(new Date().getFullYear()) </script>, eLitmus.com. | <a class='footer-text' href="/terms_of_use/">Terms of Use</a> &middot; <a  class='footer-text' href="/privacy_policy/">Privacy Policy</a>
+
+  </span>
     </center>
   </footer>
 </div><!-- /.footer-wrapper -->
