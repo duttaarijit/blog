@@ -1,7 +1,7 @@
 [
 	
 		{
-		  "title"    : "Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading",
+		  "title"    : "Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers",
 		  "category" : "technology",
 		  "url"     : "/technology/setting-up-elb-plus-nginx-with-https-offloading/",
 		  "date"     : "2017-03-08 00:00:00 +0530",

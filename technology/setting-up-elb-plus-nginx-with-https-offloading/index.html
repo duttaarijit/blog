@@ -5,15 +5,15 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
 <head>
 <meta charset="utf-8">
-<title>Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading &#8211; eLitmus Blog</title>
+<title>Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers &#8211; eLitmus Blog</title>
 <meta name="description" content="We learn new things everyday, and we document our learnings here...">
 
 <meta name="keywords" content="ELB, NGINX, https offloading, OAuth, Rails">
 
 <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary">    
-<meta name="twitter:title" content="Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading">
-<meta name="twitter:description" content=" Setting up HTTPS offloading with load balancer for a Rails application, OAuth may give <b>'CSRF detected'</b> errors">
+<meta name="twitter:title" content="Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers">
+<meta name="twitter:description" content=" If you use OAuth2 with your Rails application and your application sits behind a load balancer (where you offload HTTPS), then you may start seeing <b>'CSRF detected'</b> errors thrown by Rails.">
 <meta name="twitter:site" content="@elitmus">
 
     
@@ -35,8 +35,8 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="/blog/images/blog_logo_taglinedorange.png"/>
 <meta property="og:type" content="article">
-<meta property="og:title" content="Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading">
-<meta property="og:description" content="Setting up HTTPS offloading with load balancer for a Rails application, OAuth may give <b>'CSRF detected'</b> errors">
+<meta property="og:title" content="Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers">
+<meta property="og:description" content="If you use OAuth2 with your Rails application and your application sits behind a load balancer (where you offload HTTPS), then you may start seeing <b>'CSRF detected'</b> errors thrown by Rails.">
 <meta property="og:url" content="/blog/technology/setting-up-elb-plus-nginx-with-https-offloading/">
 
 <meta property="og:site_name" content="eLitmus Blog">
@@ -250,7 +250,7 @@
       <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.elitmus.com/blog/technology/setting-up-elb-plus-nginx-with-https-offloading/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-twitter">
-       <a href="https://twitter.com/share?hashtags=technology&text=Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
+       <a href="https://twitter.com/share?hashtags=technology&text=Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
     </span>&nbsp;&nbsp;
      
 </div>
@@ -258,7 +258,7 @@
                 </span>
               
                 
-                  <h1 class="no-padding">Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading</h1>
+                  <h1 class="no-padding">Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers</h1>
                 
               </header>
             </div>
@@ -275,7 +275,7 @@
                 </div>
                 <div class='pull-right date-show'>
                   <span>
-                    <a href="/blog/technology/setting-up-elb-plus-nginx-with-https-offloading/" rel="bookmark" title="Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading">
+                    <a href="/blog/technology/setting-up-elb-plus-nginx-with-https-offloading/" rel="bookmark" title="Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers">
                       <i class="fa fa-link"></i> Permalink
                     </a>
                   </span>
@@ -286,7 +286,7 @@
                     <h3 class="panel-title">TL;DR</h3>
                   </div>
                   <div class="panel-body">
-                    <aside>Setting up HTTPS offloading with load balancer for a Rails application, OAuth may give <b>'CSRF detected'</b> errors</aside>
+                    <aside>If you use OAuth2 with your Rails application and your application sits behind a load balancer (where you offload HTTPS), then you may start seeing <b>'CSRF detected'</b> errors thrown by Rails.</aside>
                   </div>
                 </div>
 
@@ -433,7 +433,7 @@ We went ahead with this choice. Using <a href="https://docs.chef.io/chef_solo.ht
       <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.elitmus.com/blog/technology/setting-up-elb-plus-nginx-with-https-offloading/" title="Share on Facebook" itemprop="Facebook"><i class="fa fa-facebook-square fa-lg"></i> Like</a>
     </span>&nbsp;&nbsp;
     <span class="social-share-twitter">
-       <a href="https://twitter.com/share?hashtags=technology&text=Setting up OAuth NGINX callbacks in Rails production environment with load balancers and HTTPS offloading&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
+       <a href="https://twitter.com/share?hashtags=technology&text=Setting up OAuth2 callbacks in Rails with HTTPS offloading on load balancers&via=elitmus" title="Share on Twitter" itemprop="Twitter"><i class="fa fa-twitter-square  fa-lg"></i></i> Tweet</a>
     </span>&nbsp;&nbsp;
      
 </div>
