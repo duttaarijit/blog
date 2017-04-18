@@ -32,6 +32,8 @@
 
     
 
+    
+
 
 
 
@@ -286,26 +288,26 @@
 
 <p>One of the many challenges we faced while creating our sandbox was  redirection of the standard output of untrusted code, as this simple code below will fill up the disk if redirected to file or use all system resources if redirected to a buffer.</p>
 
-<div class="highlight"><pre><code class="language-c" data-lang="c"><span class="lineno">1</span> <span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">I</span> <span class="n">am</span> <span class="n">the</span> <span class="n">green</span> <span class="n">monster</span><span class="err">”</span><span class="p">);</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span></span><span class="lineno">1 </span><span class="k">while</span><span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="err">“</span><span class="n">I</span> <span class="n">am</span> <span class="n">the</span> <span class="n">green</span> <span class="n">monster</span><span class="err">”</span><span class="p">);</span></code></pre></figure>
 
 <p>So the problem is,how to limit the size of a file or buffer?, I  started with   buffers  as they are more easy to implement.  I assumed that the <code>Write</code> method of the <code>Buffer</code> struct which writes to the buffer, will panic with <code>ErrTooLarge</code> error if buffer size is above it’s capacity, which i hoped to catch using <code>recover</code> builtin function.</p>
 
 <p>This is the code snippet below.</p>
 
-<div class="highlight"><pre><code class="language-go" data-lang="go"><span class="lineno"> 1</span> <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-<span class="lineno"> 2</span>       <span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">r</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-<span class="lineno"> 3</span>          <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Should catch if anyone panics&quot;</span><span class="p">)</span>
-<span class="lineno"> 4</span>       <span class="p">}</span>
-<span class="lineno"> 5</span>    <span class="p">}()</span>
-<span class="lineno"> 6</span>   <span class="nx">a</span> <span class="o">:=</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="lineno"> 7</span>   <span class="k">for</span> <span class="p">{</span>
-<span class="lineno"> 8</span>     <span class="nx">_</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;create boom&quot;</span><span class="p">))</span>
-<span class="lineno"> 9</span>     <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-<span class="lineno">10</span>       <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="lineno">11</span>        <span class="k">return</span>
-<span class="lineno">12</span>     <span class="p">}</span>
-<span class="lineno">13</span> 
-<span class="lineno">14</span>   <span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span></span><span class="lineno"> 1 </span>   <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+<span class="lineno"> 2 </span>      <span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">r</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="lineno"> 3 </span>         <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;Should catch if anyone panics&quot;</span><span class="p">)</span>
+<span class="lineno"> 4 </span>      <span class="p">}</span>
+<span class="lineno"> 5 </span>   <span class="p">}()</span>
+<span class="lineno"> 6 </span>  <span class="nx">a</span> <span class="o">:=</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="lineno"> 7 </span>  <span class="k">for</span> <span class="p">{</span>
+<span class="lineno"> 8 </span>    <span class="nx">_</span><span class="p">,</span><span class="nx">err</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;create boom&quot;</span><span class="p">))</span>
+<span class="lineno"> 9 </span>    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="lineno">10 </span>      <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="lineno">11 </span>       <span class="k">return</span>
+<span class="lineno">12 </span>    <span class="p">}</span>
+<span class="lineno">13 </span>
+<span class="lineno">14 </span>  <span class="p">}</span></code></pre></figure>
 
 <p>On running this code, my system was frozen and crashed a little later. This is not what i expected, On further investigation by looking to <a href="http://golang.org/src/bytes/buffer.go?s=4155:4206#L115">source code</a> and reading the <code>bytes</code> package documentation again, i found out that <code>Write</code> method in the <code>bytes</code> package is growing the capacity of the  buffer if the buffer capacity is not enough, which in turn is increasing the amount of memory and resources used by the system.</p>
 
@@ -315,42 +317,42 @@
 
 <p>This is code snippet of my custom wrapper.</p>
 
-<div class="highlight"><pre><code class="language-go" data-lang="go"><span class="lineno"> 1</span> <span class="kd">type</span> <span class="nx">MyBuffer</span> <span class="kd">struct</span> <span class="p">{</span>
-<span class="lineno"> 2</span>     <span class="nx">cap</span>   <span class="kt">int</span>
-<span class="lineno"> 3</span>     <span class="nx">mybuf</span> <span class="o">*</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
-<span class="lineno"> 4</span> <span class="p">}</span>
-<span class="lineno"> 5</span> 
-<span class="lineno"> 6</span> <span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyBuffer</span><span class="p">)</span> <span class="nx">Write</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-<span class="lineno"> 7</span>     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">Len</span><span class="p">()</span> <span class="p">&gt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">cap</span> <span class="p">{</span>
-<span class="lineno"> 8</span>         <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span>
-<span class="lineno"> 9</span>         <span class="nb">panic</span><span class="p">(</span><span class="s">&quot;Buffer Overflow&quot;</span><span class="p">)</span>
-<span class="lineno">10</span>     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-<span class="lineno">11</span>         <span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">Write</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
-<span class="lineno">12</span>     <span class="p">}</span>
-<span class="lineno">13</span>     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">),</span> <span class="kc">nil</span>
-<span class="lineno">14</span> <span class="p">}</span>
-<span class="lineno">15</span> 
-<span class="lineno">16</span> <span class="kd">func</span> <span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">MyBuffer</span> <span class="p">{</span>
-<span class="lineno">17</span>     <span class="k">return</span> <span class="o">&amp;</span><span class="nx">MyBuffer</span><span class="p">{</span><span class="nx">mybuf</span><span class="p">:</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">buf</span><span class="p">),</span> <span class="nx">cap</span><span class="p">:</span> <span class="nx">cap</span><span class="p">}</span>
-<span class="lineno">18</span> <span class="p">}</span>
-<span class="lineno">19</span> 
-<span class="lineno">20</span> <span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-<span class="lineno">21</span> 
-<span class="lineno">22</span>     <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
-<span class="lineno">23</span>         <span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">r</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-<span class="lineno">24</span>             <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;recover in yes&quot;</span><span class="p">)</span>
-<span class="lineno">25</span>         <span class="p">}</span>
-<span class="lineno">26</span>     <span class="p">}()</span>
-<span class="lineno">27</span> 
-<span class="lineno">28</span>     <span class="nx">a</span> <span class="o">:=</span> <span class="nx">NewBuffer</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="mi">200</span><span class="p">)</span>
-<span class="lineno">29</span>     <span class="k">for</span> <span class="p">{</span>
-<span class="lineno">30</span>         <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;Check for Buffer Overflow&quot;</span><span class="p">))</span>
-<span class="lineno">31</span>         <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-<span class="lineno">32</span>             <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
-<span class="lineno">33</span>             <span class="k">return</span>
-<span class="lineno">34</span>         <span class="p">}</span>
-<span class="lineno">35</span>     <span class="p">}</span>
-<span class="lineno">36</span> <span class="p">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-go" data-lang="go"><span></span><span class="lineno"> 1 </span><span class="kd">type</span> <span class="nx">MyBuffer</span> <span class="kd">struct</span> <span class="p">{</span>
+<span class="lineno"> 2 </span>    <span class="nx">cap</span>   <span class="kt">int</span>
+<span class="lineno"> 3 </span>    <span class="nx">mybuf</span> <span class="o">*</span><span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
+<span class="lineno"> 4 </span><span class="p">}</span>
+<span class="lineno"> 5 </span>
+<span class="lineno"> 6 </span><span class="kd">func</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span><span class="nx">MyBuffer</span><span class="p">)</span> <span class="nx">Write</span><span class="p">(</span><span class="nx">p</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">)</span> <span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 7 </span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span><span class="o">+</span><span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">Len</span><span class="p">()</span> <span class="p">&gt;</span> <span class="nx">b</span><span class="p">.</span><span class="nx">cap</span> <span class="p">{</span>
+<span class="lineno"> 8 </span>        <span class="nx">fmt</span><span class="p">.</span><span class="nx">Printf</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">String</span><span class="p">())</span>
+<span class="lineno"> 9 </span>        <span class="nb">panic</span><span class="p">(</span><span class="s">&quot;Buffer Overflow&quot;</span><span class="p">)</span>
+<span class="lineno">10 </span>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="lineno">11 </span>        <span class="nx">b</span><span class="p">.</span><span class="nx">mybuf</span><span class="p">.</span><span class="nx">Write</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="lineno">12 </span>    <span class="p">}</span>
+<span class="lineno">13 </span>    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nx">p</span><span class="p">),</span> <span class="kc">nil</span>
+<span class="lineno">14 </span><span class="p">}</span>
+<span class="lineno">15 </span>
+<span class="lineno">16 </span><span class="kd">func</span> <span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">buf</span> <span class="p">[]</span><span class="kt">byte</span><span class="p">,</span> <span class="nx">cap</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">MyBuffer</span> <span class="p">{</span>
+<span class="lineno">17 </span>    <span class="k">return</span> <span class="o">&amp;</span><span class="nx">MyBuffer</span><span class="p">{</span><span class="nx">mybuf</span><span class="p">:</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">buf</span><span class="p">),</span> <span class="nx">cap</span><span class="p">:</span> <span class="nx">cap</span><span class="p">}</span>
+<span class="lineno">18 </span><span class="p">}</span>
+<span class="lineno">19 </span>
+<span class="lineno">20 </span><span class="kd">func</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="lineno">21 </span>
+<span class="lineno">22 </span>    <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+<span class="lineno">23 </span>        <span class="k">if</span> <span class="nx">r</span> <span class="o">:=</span> <span class="nb">recover</span><span class="p">();</span> <span class="nx">r</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="lineno">24 </span>            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="s">&quot;recover in yes&quot;</span><span class="p">)</span>
+<span class="lineno">25 </span>        <span class="p">}</span>
+<span class="lineno">26 </span>    <span class="p">}()</span>
+<span class="lineno">27 </span>
+<span class="lineno">28 </span>    <span class="nx">a</span> <span class="o">:=</span> <span class="nx">NewBuffer</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="mi">200</span><span class="p">)</span>
+<span class="lineno">29 </span>    <span class="k">for</span> <span class="p">{</span>
+<span class="lineno">30 </span>        <span class="nx">_</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">Write</span><span class="p">([]</span><span class="nb">byte</span><span class="p">(</span><span class="s">&quot;Check for Buffer Overflow&quot;</span><span class="p">))</span>
+<span class="lineno">31 </span>        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="lineno">32 </span>            <span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">Error</span><span class="p">())</span>
+<span class="lineno">33 </span>            <span class="k">return</span>
+<span class="lineno">34 </span>        <span class="p">}</span>
+<span class="lineno">35 </span>    <span class="p">}</span>
+<span class="lineno">36 </span><span class="p">}</span></code></pre></figure>
 
 <p>On running this code, it worked as expected, hopefully will be deployed in production.
 The same goes for files as well.</p>
@@ -427,6 +429,8 @@ The same goes for files as well.</p>
           </div>
         </div>
       </div>
+
+  
 
   
 

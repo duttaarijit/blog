@@ -7,14 +7,8 @@
     
         
         
-        
-    
-        
-    
-        
-        
         <url>
-            <loc>https://www.elitmus.com/blog/categories.html</loc>
+            <loc>https://www.elitmus.com/blog/404/</loc>
         </url>
 
         
@@ -25,7 +19,18 @@
         
         
         <url>
-            <loc>https://www.elitmus.com/blog/index.html</loc>
+            <loc>https://www.elitmus.com/blog/categories/</loc>
+        </url>
+
+        
+        
+    
+        
+    
+        
+        
+        <url>
+            <loc>https://www.elitmus.com/blog/</loc>
         </url>
 
         
@@ -34,7 +39,7 @@
         
         
         <url>
-            <loc>https://www.elitmus.com/blog/job_post.html</loc>
+            <loc>https://www.elitmus.com/blog/job_post/</loc>
         </url>
 
         

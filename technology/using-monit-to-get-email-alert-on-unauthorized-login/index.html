@@ -32,6 +32,8 @@
 
     
 
+    
+
 
 
 
@@ -284,7 +286,7 @@
                 <div class="post-content-justify">
                   <p>For a long time, we had our own custom written perl script to alert us whenever someone logged into our production servers from an ip address we do not recognize (not whitelisted). The script looked somewhat like this…</p>
 
-<div class="highlight"><pre><code class="language-perl" data-lang="perl"><span class="c1">#!/usr/bin/perl</span>
+<figure class="highlight"><pre><code class="language-perl" data-lang="perl"><span></span><span class="ch">#!/usr/bin/perl</span>
 <span class="c1"># script file: alert_on_login.pl</span>
 <span class="c1">#</span>
 <span class="k">my</span> <span class="nv">$login_str</span> <span class="o">=</span> <span class="s">&quot;Accepted publickey&quot;</span><span class="p">;</span>
@@ -312,7 +314,7 @@
                           <span class="s">&#39;Server login from &#39;</span> <span class="o">.</span> <span class="nv">$arr</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span>
                           <span class="nv">$_</span><span class="p">);</span>
         <span class="p">}</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>All we needed to do was to run this script in the background as a daemon, and it would send us an email alert whenever someone logged in successfully. As root user start the script like this:</p>
 
@@ -327,16 +329,16 @@
 
 <p><a href="https://mmonit.com/monit/">Monit’s</a> global configuration file is usually /etc/monit/monitrc. Here is what <a href="https://mmonit.com/monit/">monit</a> needs to be told about how to send email alerts:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">...
-<span class="c"># This is our SMTP server settings. The complete syntax is</span>
-<span class="c"># SET MAILSERVER &lt;hostname [PORT] [USERNAME] [PASSWORD] [using SSLAUTO|SSLV2|SSLV3|TLSV11|TLSV12] [CERTMD5 checksum]&gt;, ...</span>
-<span class="c">#          [with TIMEOUT X SECONDS]</span>
-<span class="c">#          [using HOSTNAME hostname]</span>
-<span class="c">#</span>
-<span class="c"># But for our purpose, localhost is good enough</span>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>...
+<span class="c1"># This is our SMTP server settings. The complete syntax is</span>
+<span class="c1"># SET MAILSERVER &lt;hostname [PORT] [USERNAME] [PASSWORD] [using SSLAUTO|SSLV2|SSLV3|TLSV11|TLSV12] [CERTMD5 checksum]&gt;, ...</span>
+<span class="c1">#          [with TIMEOUT X SECONDS]</span>
+<span class="c1">#          [using HOSTNAME hostname]</span>
+<span class="c1">#</span>
+<span class="c1"># But for our purpose, localhost is good enough</span>
 SET mailserver localhost
 
-<span class="c"># This is the email template for alert messages</span>
+<span class="c1"># This is the email template for alert messages</span>
 SET mail-format <span class="o">{</span>
   from: monit@elitmus.com
   subject: <span class="nv">$SERVICE</span> <span class="nv">$EVENT</span> at <span class="nv">$DATE</span>
@@ -345,18 +347,18 @@ SET mail-format <span class="o">{</span>
            monit
 <span class="o">}</span>
 
-<span class="c"># Alerts can be triggered for various reasons. Successful ssh login is just one of those reasons.</span>
-<span class="c"># Since this is a global configuration, we can tell monit to not send alerts for certain events</span>
-<span class="c">#  We also specify the email address of the recepient who will receive the alerts</span>
+<span class="c1"># Alerts can be triggered for various reasons. Successful ssh login is just one of those reasons.</span>
+<span class="c1"># Since this is a global configuration, we can tell monit to not send alerts for certain events</span>
+<span class="c1">#  We also specify the email address of the recepient who will receive the alerts</span>
 
-<span class="nb">set </span>alert recepient1@elitmus.com NOT ON <span class="o">{</span> action, instance, pid, ppid, nonexist <span class="o">}</span>
-...</code></pre></div>
+<span class="nb">set</span> alert recepient1@elitmus.com NOT ON <span class="o">{</span> action, instance, pid, ppid, nonexist <span class="o">}</span>
+...</code></pre></figure>
 
 <p>And then we add this config file <code>ssh_logins.conf</code> specific to sshd related stuff:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">check file ssh_logins with path /var/log/auth.log
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span>check file ssh_logins with path /var/log/auth.log
   ignore match <span class="s2">&quot;/etc/monit/whitelist_ips.regex&quot;</span>
-  <span class="k">if</span> match <span class="s2">&quot;Accepted publickey&quot;</span> <span class="k">then</span> alert</code></pre></div>
+  <span class="k">if</span> match <span class="s2">&quot;Accepted publickey&quot;</span> <span class="k">then</span> alert</code></pre></figure>
 
 <p>Notice how we tell <a href="https://mmonit.com/monit/">monit</a> to ignore logins from known ip addresses. We can now store all whitelist ip addresses in a separate file <code>/etc/monit/whitelist_ips.regex</code>, one address per line.</p>
 
@@ -430,6 +432,8 @@ SET mail-format <span class="o">{</span>
           </div>
         </div>
       </div>
+
+  
 
   
 

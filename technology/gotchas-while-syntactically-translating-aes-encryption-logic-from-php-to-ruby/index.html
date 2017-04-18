@@ -32,6 +32,8 @@
 
     
 
+    
+
 
 
 
@@ -315,40 +317,40 @@
 
 <p>This is the encryption method in the PHP integration kit published by the gateway service provider</p>
 
-<div class="highlight"><pre><code class="language-php" data-lang="php"><span class="lineno"> 1</span> <span class="x">function encrypt($plainText,$key)</span>
-<span class="lineno"> 2</span> <span class="x">{</span>
-<span class="lineno"> 3</span> <span class="x">  $secretKey = hextobin(md5($key));</span>
-<span class="lineno"> 4</span> <span class="x">  $initVector = &quot;...&quot;;</span>
-<span class="lineno"> 5</span> <span class="x">  $openMode = mcrypt_module_open(MCRYPT_RIJNDAEL_128, &#39;&#39;,&#39;cbc&#39;, &#39;&#39;);</span>
-<span class="lineno"> 6</span> <span class="x">  $blockSize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, &#39;cbc&#39;);</span>
-<span class="lineno"> 7</span> 
-<span class="lineno"> 8</span> <span class="x">  $plainPad = pkcs5_pad($plainText, $blockSize);  //  &lt;---- Padding</span>
-<span class="lineno"> 9</span> 
-<span class="lineno">10</span> <span class="x">  if (mcrypt_generic_init($openMode, $secretKey, $initVector) != -1) </span>
-<span class="lineno">11</span> <span class="x">  {</span>
-<span class="lineno">12</span> <span class="x">    $encryptedText = mcrypt_generic($openMode, $plainPad);</span>
-<span class="lineno">13</span> <span class="x">    mcrypt_generic_deinit($openMode);      </span>
-<span class="lineno">14</span> <span class="x">  } </span>
-<span class="lineno">15</span> <span class="x">  return bin2hex($encryptedText);</span>
-<span class="lineno">16</span> <span class="x">}</span>
-<span class="lineno">17</span> 
-<span class="lineno">18</span> <span class="x">// Padding method</span>
-<span class="lineno">19</span> <span class="x">function pkcs5_pad ($plainText, $blockSize)</span>
-<span class="lineno">20</span> <span class="x">{</span>
-<span class="lineno">21</span> <span class="x">  // padding logic here</span>
-<span class="lineno">22</span> <span class="x">}</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span></span><span class="lineno"> 1 </span><span class="x">function encrypt($plainText,$key)</span>
+<span class="lineno"> 2 </span><span class="x">{</span>
+<span class="lineno"> 3 </span><span class="x">  $secretKey = hextobin(md5($key));</span>
+<span class="lineno"> 4 </span><span class="x">  $initVector = &quot;...&quot;;</span>
+<span class="lineno"> 5 </span><span class="x">  $openMode = mcrypt_module_open(MCRYPT_RIJNDAEL_128, &#39;&#39;,&#39;cbc&#39;, &#39;&#39;);</span>
+<span class="lineno"> 6 </span><span class="x">  $blockSize = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, &#39;cbc&#39;);</span>
+<span class="lineno"> 7 </span>
+<span class="lineno"> 8 </span><span class="x">  $plainPad = pkcs5_pad($plainText, $blockSize);  //  &lt;---- Padding</span>
+<span class="lineno"> 9 </span>
+<span class="lineno">10 </span><span class="x">  if (mcrypt_generic_init($openMode, $secretKey, $initVector) != -1) </span>
+<span class="lineno">11 </span><span class="x">  {</span>
+<span class="lineno">12 </span><span class="x">    $encryptedText = mcrypt_generic($openMode, $plainPad);</span>
+<span class="lineno">13 </span><span class="x">    mcrypt_generic_deinit($openMode);      </span>
+<span class="lineno">14 </span><span class="x">  } </span>
+<span class="lineno">15 </span><span class="x">  return bin2hex($encryptedText);</span>
+<span class="lineno">16 </span><span class="x">}</span>
+<span class="lineno">17 </span>
+<span class="lineno">18 </span><span class="x">// Padding method</span>
+<span class="lineno">19 </span><span class="x">function pkcs5_pad ($plainText, $blockSize)</span>
+<span class="lineno">20 </span><span class="x">{</span>
+<span class="lineno">21 </span><span class="x">  // padding logic here</span>
+<span class="lineno">22 </span><span class="x">}</span></code></pre></figure>
 
 <p>And here is the same implemented in Ruby</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="lineno">1</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">plain_text</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
-<span class="lineno">2</span>     <span class="n">secret_key</span>     <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-<span class="lineno">3</span>     <span class="n">cipher</span>         <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">Cipher</span><span class="o">::</span><span class="no">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="ss">:CBC</span><span class="p">)</span>
-<span class="lineno">4</span>     <span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span>
-<span class="lineno">5</span>     <span class="n">cipher</span><span class="o">.</span><span class="n">key</span>     <span class="o">=</span> <span class="n">secret_key</span>
-<span class="lineno">6</span>     <span class="n">cipher</span><span class="o">.</span><span class="n">iv</span>      <span class="o">=</span> <span class="no">INIT_VECTOR</span>
-<span class="lineno">7</span>     <span class="n">encrypted_text</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plain_text</span><span class="p">)</span> <span class="o">+</span> <span class="n">cipher</span><span class="o">.</span><span class="n">final</span>
-<span class="lineno">8</span>     <span class="k">return</span> <span class="p">(</span><span class="n">encrypted_text</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;H*&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">first</span>
-<span class="lineno">9</span> <span class="k">end</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="lineno">1 </span><span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">encrypt</span><span class="p">(</span><span class="n">plain_text</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+<span class="lineno">2 </span>    <span class="n">secret_key</span>     <span class="o">=</span> <span class="no">Digest</span><span class="o">::</span><span class="no">MD5</span><span class="o">.</span><span class="n">digest</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="lineno">3 </span>    <span class="n">cipher</span>         <span class="o">=</span> <span class="no">OpenSSL</span><span class="o">::</span><span class="no">Cipher</span><span class="o">::</span><span class="no">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="ss">:CBC</span><span class="p">)</span>
+<span class="lineno">4 </span>    <span class="n">cipher</span><span class="o">.</span><span class="n">encrypt</span>
+<span class="lineno">5 </span>    <span class="n">cipher</span><span class="o">.</span><span class="n">key</span>     <span class="o">=</span> <span class="n">secret_key</span>
+<span class="lineno">6 </span>    <span class="n">cipher</span><span class="o">.</span><span class="n">iv</span>      <span class="o">=</span> <span class="no">INIT_VECTOR</span>
+<span class="lineno">7 </span>    <span class="n">encrypted_text</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plain_text</span><span class="p">)</span> <span class="o">+</span> <span class="n">cipher</span><span class="o">.</span><span class="n">final</span>
+<span class="lineno">8 </span>    <span class="k">return</span> <span class="p">(</span><span class="n">encrypted_text</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;H*&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">first</span>
+<span class="lineno">9 </span><span class="k">end</span></code></pre></figure>
 
 <p>Notice any difference?</p>
 
@@ -428,6 +430,8 @@
           </div>
         </div>
       </div>
+
+  
 
   
 
